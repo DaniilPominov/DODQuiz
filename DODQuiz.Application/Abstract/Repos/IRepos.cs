@@ -12,5 +12,6 @@ namespace DODQuiz.Application.Abstract.Repos
         Task<ErrorOr<Success>> UpdateAsync(TEntity entity, CancellationToken cancellationToken);
 
         Task<ErrorOr<List<TEntity>>> GetManyByIdAsync(List<Guid> listOfId, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> Attach(TEntity entity, CancellationToken cancellationToken);
     }
 }

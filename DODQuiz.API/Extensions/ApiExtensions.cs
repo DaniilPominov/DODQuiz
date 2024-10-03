@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using DODQuiz.Application.Abstract.Services;
+using DODQuiz.Application.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -6,7 +8,12 @@ namespace DODQuiz.API.Extensions
 {
     public static class ApiExtensions
     {
-
+        public static void AddQuizGame(this IServiceCollection services)
+        {
+            
+            services.AddTransient<IProfileService, ProfileService>();
+            services.AddSingleton<IGameService, GameService>();
+        }
         public static void AddApiAuth(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtoptions = configuration.GetRequiredSection("jwtoptions");

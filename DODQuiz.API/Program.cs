@@ -1,4 +1,5 @@
-
+using DODQuiz.API.Extensions;
+using DODQuiz.Infrastructure;
 namespace DODQuiz.API
 {
     public class Program
@@ -14,6 +15,10 @@ namespace DODQuiz.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddPersistance();
+            builder.Services.AddSecurity();
+            builder.Services.AddQuizGame();
+            builder.Services.AddApiAuth(builder.Configuration);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

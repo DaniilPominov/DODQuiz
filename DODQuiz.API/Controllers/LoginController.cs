@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using DODQuiz.Application.Abstract.Services;
+using DODQuiz.Contracts;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace DODQuiz.API.Controllers
 {
@@ -7,10 +10,22 @@ namespace DODQuiz.API.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        [HttpPost]
-        public async Task<ActionResult> Login(LoginRequest loginRequest)
+
+        private readonly IProfileService profileService;
+        public LoginController(IProfileService profileService) 
         {
-            return Ok();
+            this.profileService = profileService;
+        }
+        [HttpPost]
+        public async Task<ActionResult> Login(UserLoginRequest loginRequest)
+        {
+            var userToken = await profileService.Login(loginRequest.name, loginRequest.password);
+            if (userToken.IsError == true)
+            {
+                return BadRequest(userToken.Errors);
+            }
+            HttpContext.Response.Cookies.Append("bivis-bober",  userToken.Value);
+            return Ok(userToken);
         }
     }
 }

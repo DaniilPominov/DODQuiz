@@ -19,7 +19,7 @@ namespace DODQuiz.Infrastructure
         {
             services.AddDbContext<GameContext>();
 
-            services.AddScoped<IPlayerRepos, UserRepos>();
+            services.AddScoped<IUserRepos, UserRepos>();
             services.AddScoped<IQuestionRepos, QuestionRepos>();
             services.AddScoped<IRoleRepos, RoleRepos>();
 

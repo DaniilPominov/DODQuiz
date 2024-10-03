@@ -94,6 +94,18 @@ namespace DODQuiz.Infrastructure.Data.Repos
                 throw new Exception(ex.Message + $" Gettings entities by listOfId query was failed");
             }
         }
+        public async Task<ErrorOr<Success>> Attach(T entity, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _context.Attach(entity);
+                return ErrorOr.Result.Success;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + $"Attaching entity was failed");
+            }
+        }
 
         public async Task<ErrorOr<List<T>>> GetAllAsync(CancellationToken cancellationToken)
         {

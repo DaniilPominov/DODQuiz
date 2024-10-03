@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using ErrorOr;
 
 namespace DODQuiz.Core.Entyties
 {
@@ -8,5 +9,10 @@ namespace DODQuiz.Core.Entyties
         public string Name { get; set; }
 
         public List<User> Users { get; set; }
+
+        public static ErrorOr<Role> Create(Guid id, string name, List<User> users)
+        {
+            return new Role() { Id=id,Name=name,Users=users };
+        }
     }
 }

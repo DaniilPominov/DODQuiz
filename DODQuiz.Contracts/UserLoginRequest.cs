@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DODQuiz.Contracts
 {
-    public record LoginRequest
+    public record UserLoginRequest
     (
-        string username,
+        string name,
         string password
         );
 }
