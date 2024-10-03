@@ -5,8 +5,10 @@ using ErrorOr;
 
 namespace DODQuiz.Infrastructure.Data.Repos
 {
-    public class QuestionRepos : BaseRepository<Question>,IQuestionRepos
+    public class UserRepos : BaseRepository<User>,IPlayerRepos
+
     {
-       public QuestionRepos(GameContext gameContext) : base(gameContext) { }
+        public UserRepos(GameContext gameContext) : base(gameContext) { }
+        
     }
 }
