@@ -28,4 +28,11 @@
     <ProjectReference Include="..\DODQuiz.Core\DODQuiz.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Config\" />
+    <Folder Include="Data\Context\" />
+    <Folder Include="Security\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
