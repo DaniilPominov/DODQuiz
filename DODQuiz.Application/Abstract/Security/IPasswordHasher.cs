@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace DODQuiz.Application.Abstract.Security
 {
-    internal interface IPasswordHasher
+    public interface IPasswordHasher
     {
+        string Generate(string password);
+
+        bool VerifyPassword(string password, string HashedPassword);
     }
 }

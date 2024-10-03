@@ -1,12 +1,15 @@
-﻿using System;
+﻿using DODQuiz.Core.Entyties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DODQuiz.Application.Abstract.Security
 {
-    internal interface IJWTProvider
+    public interface IJWTProvider
     {
+        string GenerateToken(User user);
     }
 }

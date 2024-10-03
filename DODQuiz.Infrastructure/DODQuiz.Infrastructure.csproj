@@ -29,9 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Config\" />
-    <Folder Include="Data\Context\" />
-    <Folder Include="Security\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
