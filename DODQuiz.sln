@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DODQuiz.Application", "DODQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DODQuiz.Infrastructure", "DODQuiz.Infrastructure\DODQuiz.Infrastructure.csproj", "{731311DB-B6DE-4536-85B0-C935C3BC8B9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DODQuiz.Contracts", "DODQuiz.Contracts\DODQuiz.Contracts.csproj", "{4799D3E2-4024-42DC-93F0-4A380C003EA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{731311DB-B6DE-4536-85B0-C935C3BC8B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{731311DB-B6DE-4536-85B0-C935C3BC8B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{731311DB-B6DE-4536-85B0-C935C3BC8B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4799D3E2-4024-42DC-93F0-4A380C003EA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4799D3E2-4024-42DC-93F0-4A380C003EA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4799D3E2-4024-42DC-93F0-4A380C003EA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4799D3E2-4024-42DC-93F0-4A380C003EA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
