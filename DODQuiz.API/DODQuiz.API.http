@@ -1,0 +1,6 @@
+@DODQuiz.API_HostAddress = http://localhost:5062
+
+GET {{DODQuiz.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
