@@ -1,16 +1,10 @@
 ﻿using DODQuiz.Application.Abstract.Security;
+using DODQuiz.Core.Entyties;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using DODQuiz.Application.Abstract.Security;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Numerics;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using DODQuiz.Core.Entyties;
 
 namespace DODQuiz.Infrastructure.Security
 {

@@ -1,12 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using DODQuiz.Core.Entyties;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using DODQuiz.Core.Entyties;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DODQuiz.Infrastructure.Data.Config
 {
