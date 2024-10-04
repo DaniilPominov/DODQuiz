@@ -68,35 +68,62 @@
     </style>
 </head>
 <body>
-    <div id="timer">Таймер: 00:00</div>
+    <div class="content" id="protectedContent">
+        <div id="timer">Таймер: 00:00</div>
 
-    <div class="image-container">
-        <div class="image-frame">
-            <img src="https://via.placeholder.com/200" alt="Изображение 1">
+        <div class="image-container">
+            <div class="image-frame">
+                <img src="https://via.placeholder.com/200" alt="Изображение 1">
+            </div>
+            <div class="image-frame">
+                <img src="https://via.placeholder.com/200" alt="Изображение 2">
+            </div>
+            <div class="image-frame">
+                <img src="https://via.placeholder.com/200" alt="Изображение 3">
+            </div>
         </div>
-        <div class="image-frame">
-            <img src="https://via.placeholder.com/200" alt="Изображение 2">
-        </div>
-        <div class="image-frame">
-            <img src="https://via.placeholder.com/200" alt="Изображение 3">
-        </div>
-    </div>
 
-    <div class="button-container">
-        <button class="button">Кнопка 1</button>
-        <button class="button">Кнопка 2</button>
-        <button class="button">Кнопка 3</button>
-    </div>
-
-    <script>
-        // Пример таймера
-        let seconds = 0;
-        setInterval(() => {
-            seconds++;
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            document.getElementById('timer').textContent = `Таймер: ${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-        }, 1000);
-    </script>
+        <div class="button-container">
+            <button class="button">Кнопка 1</button>
+            <button class="button">Кнопка 2</button>
+            <button class="button">Кнопка 3</button>
+        </div>
+        </div>
+        <script>
+            // Пример таймера
+            let seconds = 0;
+            setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                document.getElementById('timer').textContent = `Таймер: ${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            }, 1000);
+            // Проверка аутентификации и прав пользователя
+            fetch('http://192.168.31.225:5072/api/Login/CheckRoles') // Путь для проверки статуса аутентификации
+                .then(response => {
+                    if (!response.ok) {
+                        // Если пользователь не авторизован, перенаправляем на страницу логина
+                        window.location.href = '/login.html'; // Замените на ваш URL страницы логина
+                        console.log(response);
+                        return;
+                    }
+                    return response.json(); // Получаем данные о пользователе
+                })
+                .then(data => {
+                    const access = true ? data.userroles.includes("admin") : false;
+                    console.log(access);
+                    if (data && !access) {
+                        // Если пользователь авторизован, но не имеет доступа
+                        document.getElementById('errorMessage').textContent = 'У вас нет прав для доступа к этому содержимому.';
+                    } else {
+                        // Если пользователь авторизован и имеет доступ
+                        document.getElementById('protectedContent').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    document.getElementById('errorMessage').textContent = 'Произошла ошибка при проверке аутентификации.';
+                });
+        </script>
 </body>
 </html>
