@@ -52,11 +52,11 @@ namespace DODQuiz.Infrastructure.Data.Repos
             }
         }
 
-        public async Task<ErrorOr<Success>> DeleteAsync(T entity, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                _context.Set<T>().Remove(entity);
+                await _context.Set<T>().Where(e=>e.Id==id).ExecuteDeleteAsync(cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return ErrorOr.Result.Success;

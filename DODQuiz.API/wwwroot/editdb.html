@@ -92,11 +92,11 @@
     </table>
 
     <script>
-        const apiUrl = '/api'; // Базовый URL для API
+        //const apiUrl = '/api'; // Базовый URL для API
 
         // Функция для получения всех объектов и отображения их в таблице
         async function fetchObjects() {
-            const response = await fetch(`${apiUrl}/GetAll`);
+            const response = await fetch(`api/Admin/GetAllQuestions`);
             const objects = await response.json();
             const tableBody = document.getElementById('objectsTable').querySelector('tbody');
             tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
@@ -110,10 +110,11 @@
                     <td>${obj.category}</td>
                     <td><img src="${obj.imageUri}" alt="${obj.name}" style="width: 100px;"></td>
                     <td>
-                        <button class="button" onclick="editObject(${obj.id})">Редактировать</button>
-                        <button class="button" onclick="deleteObject(${obj.id})">Удалить</button>
+                        
+                        <button class="button" onclick="deleteObject('${obj.id}')">Удалить</button>
                     </td>
                 `;
+                //<button class="button" onclick="editObject('${obj.id}')">Редактировать</button>
                 tableBody.appendChild(row);
             });
         }
@@ -125,9 +126,7 @@
             const description = document.getElementById('description').value;
             const category = document.getElementById('category').value;
             const imageUri = document.getElementById('imageUri').value;
-
-            const method = id ? 'Edit' : 'Add';
-            const response = await fetch(`${apiUrl}/${method}`, {
+            const response = await fetch(`api/Admin/AddQuestion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -142,10 +141,23 @@
                 alert('Ошибка при сохранении объекта.');
             }
         }
+        function findRowById(id) {
+            const table = document.getElementById('objectsTable');
+            const rows = table.getElementsByTagName('tr'); // Получаем все строки таблицы
+
+            for (let i = 1; i < rows.length; i++) { // Начинаем с 1, чтобы пропустить заголовок
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells.length > 0 && cells[0].innerText === id.toString()) { // Сравниваем ID
+                    
+                    return rows[i]; // Завершаем выполнение функции
+                }
+            }
+        }
 
         // Функция для редактирования объекта
         function editObject(id) {
-            const row = document.querySelector(`tr[data-id="${id}"]`);
+            const row = findRowById(id);
+            console.log(row);
             document.getElementById('objectId').value = id;
             document.getElementById('name').value = row.children[1].innerText;
             document.getElementById('description').value = row.children[2].innerText;
@@ -155,12 +167,13 @@
 
         // Функция для удаления объекта
         async function deleteObject(id) {
-            const response = await fetch(`${apiUrl}/Delete`, {
+            console.log(id);
+            const response = await fetch(`api/Admin/DeleteQuestion?id=${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id })
+                }//,
+                //body: JSON.stringify({ id })
             });
 
             if (response.ok) {

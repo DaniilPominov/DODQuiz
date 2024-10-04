@@ -52,7 +52,7 @@ namespace DODQuiz.API.Controllers
         public async Task<ActionResult> AddQuestion(QuestionRequest questionRequest, CancellationToken cancellationToken)
         {
             var result = await gameService.AddQuestion(questionRequest, cancellationToken);
-            if ( result.IsError)
+            if (result.IsError)
             {
                 return BadRequest(result);
             }
@@ -64,11 +64,15 @@ namespace DODQuiz.API.Controllers
             return Ok();
         }
         [HttpDelete("DeleteQuestion")]
-        public async Task<ActionResult> DeleteQuestion(Guid questionId, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteQuestion(Guid id, CancellationToken cancellationToken)
         {
+            var result = await gameService.DeleteQuestion(id, cancellationToken);
+            if (result.IsError)
+            {
+                return BadRequest(result);
+            }
             
-            
-            return Ok();
+            return Ok(result);
         }
 
     }

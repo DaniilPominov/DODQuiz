@@ -34,5 +34,20 @@ namespace DODQuiz.Application.Services
                 questionRequest?.imageUri);
             return await _questionRepository.AddAsync(question.Value,cancellationToken);
         }
+
+        public async Task<ErrorOr<Success>> DeleteQuestion(Guid questionId, CancellationToken cancellationToken)
+        {
+            var result = await _questionRepository.DeleteAsync(questionId, cancellationToken);
+            if (result.IsError)
+            {
+                return Error.Failure();
+            }
+            return result;
+        }
+
+        public Task<ErrorOr<Success>> UpdateQuestion(Guid id, QuestionRequest questionRequest, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
