@@ -1,11 +1,13 @@
 ﻿using DODQuiz.Application.Abstract.Repos;
 using DODQuiz.Core.Entyties;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DODQuiz.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = "admin")]
     [ApiController]
     public class DebugController : ControllerBase
     {

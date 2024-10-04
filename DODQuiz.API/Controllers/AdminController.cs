@@ -29,7 +29,22 @@ namespace DODQuiz.API.Controllers
         [HttpGet("GetUsers")]
         public async Task<ActionResult> GetUsers(CancellationToken cancellationToken)
         {
-            return Ok();
+            var result = await gameService.GetAllUsers(cancellationToken);
+            if (result.IsError)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result.Value);
+        }
+        [HttpGet("GetInGameUsers")]
+        public async Task<ActionResult> GetInGameUsers(CancellationToken cancellationToken)
+        {
+            var result = await gameService.GetAllInGameUsers(cancellationToken);
+            if (result.IsError)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result.Value);
         }
 
         [HttpGet("GetQuestionByUser")]

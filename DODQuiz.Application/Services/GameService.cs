@@ -15,10 +15,50 @@ namespace DODQuiz.Application.Services
     {
         private readonly IUserRepos _userRepository;
         private readonly IQuestionRepos _questionRepository;
+        private List<Question> _questions = new();
+        private List<User> _users = new();
+        private Dictionary<User,Question> _userToQuestion = new();
         public GameService(IUserRepos userRepository, IQuestionRepos questionRepository)
         {
             _userRepository = userRepository;
             _questionRepository = questionRepository;
+        }
+        public async Task<ErrorOr<List<User>>> GetAllUsers(CancellationToken cancellationToken)
+        {
+            var result = await _userRepository.GetAllAsync(cancellationToken);
+            return result;
+        }
+        public async Task<ErrorOr<Success>> AddUserToGame(Guid userId, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+            _users.Add(user.Value);
+            return Result.Success;
+        }
+        public async Task<ErrorOr<Success>> RemoveUserFromGame(Guid userId, CancellationToken cancellationToken)
+        {
+            if (_users.Any(u => u.Id == userId))
+            {
+                var user = _users.FirstOrDefault(u => u.Id == userId);
+                _users.Remove(user);
+                return Result.Success;
+            }
+            return Error.NotFound();
+        }
+        public async Task<ErrorOr<Success>> ChangeUserQuestion(Guid userId, Guid questionId, CancellationToken cancellationToken)
+        {
+            var user = _userToQuestion.Keys.ToList().Find(u => u.Id == userId);
+            var question = _questions.Find(u => u.Id == questionId);
+            if (user == null)
+            {
+                return Error.NotFound();
+            }
+            if (question == null)
+            {
+                return Error.Validation();
+            }
+            _userToQuestion[user] = question;
+            return Result.Success;
+
         }
         public async Task<ErrorOr<List<Question>>> GetAllQuestions(CancellationToken cancellationToken)
         {
@@ -48,6 +88,11 @@ namespace DODQuiz.Application.Services
         public Task<ErrorOr<Success>> UpdateQuestion(Guid id, QuestionRequest questionRequest, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ErrorOr<List<User>>> GetAllInGameUsers(CancellationToken cancellationToken)
+        {
+            return _users;
         }
     }
 }

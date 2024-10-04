@@ -20,8 +20,15 @@ namespace DODQuiz.API.Controllers
             var id = HttpContext.User.Claims.Where(c=> c.Type== "UserId").FirstOrDefault();
             return Ok();
         }
+        [Authorize(Policy = "admin")]
         [HttpPost("StartRound")]
         public async Task<ActionResult> StartRound()
+        {
+            return Ok();
+        }
+        [Authorize(Policy = "admin")]
+        [HttpPost("EndRound")]
+        public async Task<ActionResult> EndRound()
         {
             return Ok();
         }
