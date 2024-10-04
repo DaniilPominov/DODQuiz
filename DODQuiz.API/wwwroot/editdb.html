@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление Объектами</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #333;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+
+        .button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-container {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+            .form-container input, .form-container textarea, .form-container select {
+                width: 100%;
+                padding: 10px;
+                margin: 10px 0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+    </style>
+</head>
+<body>
+
+    <h1>Управление Объектами</h1>
+
+    <div class="form-container">
+        <h2>Добавить/Редактировать Объект</h2>
+        <input type="hidden" id="objectId" value="">
+        <input type="text" id="name" placeholder="Название" required>
+        <textarea id="description" placeholder="Описание" required></textarea>
+        <input type="text" id="category" placeholder="Категория" required>
+        <input type="text" id="imageUri" placeholder="URL изображения" required>
+        <button class="button" id="saveButton">Сохранить</button>
+    </div>
+
+    <table id="objectsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Описание</th>
+                <th>Категория</th>
+                <th>Изображение</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Данные будут вставлены здесь -->
+        </tbody>
+    </table>
+
+    <script>
+        const apiUrl = '/api'; // Базовый URL для API
+
+        // Функция для получения всех объектов и отображения их в таблице
+        async function fetchObjects() {
+            const response = await fetch(`${apiUrl}/GetAll`);
+            const objects = await response.json();
+            const tableBody = document.getElementById('objectsTable').querySelector('tbody');
+            tableBody.innerHTML = ''; // Очищаем таблицу перед добавлением новых данных
+
+            objects.forEach(obj => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${obj.id}</td>
+                    <td>${obj.name}</td>
+                    <td>${obj.description}</td>
+                    <td>${obj.category}</td>
+                    <td><img src="${obj.imageUri}" alt="${obj.name}" style="width: 100px;"></td>
+                    <td>
+                        <button class="button" onclick="editObject(${obj.id})">Редактировать</button>
+                        <button class="button" onclick="deleteObject(${obj.id})">Удалить</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Функция для добавления или редактирования объекта
+        async function saveObject() {
+            const id = document.getElementById('objectId').value;
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+            const category = document.getElementById('category').value;
+            const imageUri = document.getElementById('imageUri').value;
+
+            const method = id ? 'Edit' : 'Add';
+            const response = await fetch(`${apiUrl}/${method}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id, name, description, category, imageUri })
+            });
+
+            if (response.ok) {
+                resetForm();
+                fetchObjects(); // Обновляем таблицу
+            } else {
+                alert('Ошибка при сохранении объекта.');
+            }
+        }
+
+        // Функция для редактирования объекта
+        function editObject(id) {
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            document.getElementById('objectId').value = id;
+            document.getElementById('name').value = row.children[1].innerText;
+            document.getElementById('description').value = row.children[2].innerText;
+            document.getElementById('category').value = row.children[3].innerText;
+            document.getElementById('imageUri').value = row.children[4].querySelector('img').src;
+        }
+
+        // Функция для удаления объекта
+        async function deleteObject(id) {
+            const response = await fetch(`${apiUrl}/Delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            });
+
+            if (response.ok) {
+                fetchObjects(); // Обновляем таблицу
+            } else {
+                alert('Ошибка при удалении объекта.');
+            }
+        }
+
+        // Функция для сброса формы
+        function resetForm() {
+            document.getElementById('objectId').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('imageUri').value = '';
+        }
+
+        // Инициализация
+        document.getElementById('saveButton').addEventListener('click', saveObject);
+        fetchObjects(); // Загружаем объекты при загрузке страницы
+    </script>
+</body>
+</html>

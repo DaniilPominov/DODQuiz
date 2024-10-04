@@ -16,6 +16,9 @@
             justify-content: center;
             position: relative;
         }
+        #protectedContent{
+            display:none;
+        }
 
         #timer {
             position: absolute;
@@ -68,27 +71,30 @@
     </style>
 </head>
 <body>
-    <div class="content" id="protectedContent">
+    <div id="loading">Проверка аутентификации...</div>
+    <div class="error-message" id="errorMessage"></div>
+    <div class="content" id="Content">
         <div id="timer">Таймер: 00:00</div>
+        <div class="content" id="protectedContent">
 
-        <div class="image-container">
-            <div class="image-frame">
-                <img src="https://via.placeholder.com/200" alt="Изображение 1">
+            <div class="image-container">
+                <div class="image-frame">
+                    <img src="https://via.placeholder.com/200" alt="Изображение 1">
+                </div>
+                <div class="image-frame">
+                    <img src="https://via.placeholder.com/200" alt="Изображение 2">
+                </div>
+                <div class="image-frame">
+                    <img src="https://via.placeholder.com/200" alt="Изображение 3">
+                </div>
             </div>
-            <div class="image-frame">
-                <img src="https://via.placeholder.com/200" alt="Изображение 2">
-            </div>
-            <div class="image-frame">
-                <img src="https://via.placeholder.com/200" alt="Изображение 3">
-            </div>
-        </div>
 
-        <div class="button-container">
-            <button class="button">Кнопка 1</button>
-            <button class="button">Кнопка 2</button>
-            <button class="button">Кнопка 3</button>
+            <div class="button-container">
+                <button class="button">Стоп</button>
+                <button class="button">Старт</button>
+            </div>
         </div>
-        </div>
+    </div>
         <script>
             // Пример таймера
             let seconds = 0;
@@ -98,32 +104,47 @@
                 const remainingSeconds = seconds % 60;
                 document.getElementById('timer').textContent = `Таймер: ${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
             }, 1000);
-            // Проверка аутентификации и прав пользователя
-            fetch('http://192.168.31.225:5072/api/Login/CheckRoles') // Путь для проверки статуса аутентификации
-                .then(response => {
+            async function checkAuthentication() {
+                try {
+                    const response = await fetch('api/Login/CheckRoles'); // Замените на ваш API эндпоинт
                     if (!response.ok) {
-                        // Если пользователь не авторизован, перенаправляем на страницу логина
                         window.location.href = '/login.html'; // Замените на ваш URL страницы логина
-                        console.log(response);
+                        //            console.log(response);
                         return;
                     }
-                    return response.json(); // Получаем данные о пользователе
-                })
-                .then(data => {
-                    const access = true ? data.userroles.includes("admin") : false;
-                    console.log(access);
-                    if (data && !access) {
-                        // Если пользователь авторизован, но не имеет доступа
-                        document.getElementById('errorMessage').textContent = 'У вас нет прав для доступа к этому содержимому.';
+                    const data = await response.json();
+                    return data; // Ожидаем, что сервер вернет объект с информацией о пользователе
+                } catch (error) {
+                    console.error("Ошибка:", error);
+                    return null; // Возвращаем null в случае ошибки
+                }
+            }
+
+            // Функция для инициализации
+            async function initialize() {
+                const userData = await checkAuthentication();
+                const loadingDiv = document.getElementById('loading');
+                const contentDiv = document.getElementById('protectedContent');
+                const errorDiv = document.getElementById('errorMessage');
+
+                if (userData) {
+                    // Проверяем, есть ли у пользователя необходимые роли
+                    if (userData.userroles.includes('admin')) { // Замените на ваши роли
+                        loadingDiv.style.display = 'none'; // Скрываем сообщение о загрузке
+                        contentDiv.style.display = 'block'; // Показываем содержимое
                     } else {
-                        // Если пользователь авторизован и имеет доступ
-                        document.getElementById('protectedContent').style.display = 'block';
+                        contentDiv.innerHTML = '';
+                        loadingDiv.style.display = 'none';
+                        errorDiv.textContent = "У вас нет доступа к этому содержимому.";
                     }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    document.getElementById('errorMessage').textContent = 'Произошла ошибка при проверке аутентификации.';
-                });
+                } else {
+                    loadingDiv.style.display = 'none';
+                    errorDiv.textContent = "Не удалось проверить аутентификацию.";
+                }
+            }
+
+            // Запуск инициализации
+            initialize();
         </script>
 </body>
 </html>

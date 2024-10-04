@@ -14,29 +14,11 @@ namespace DODQuiz.API.Controllers
     {
 
         private readonly IProfileService profileService;
-        public AdminController(IProfileService profileService)
+        private readonly IGameService gameService;
+        public AdminController(IProfileService profileService, IGameService gameService)
         {
             this.profileService = profileService;
-        }
-        [HttpGet("ActiveUsers")]
-        public async Task<ActionResult> GetActiveUsers()
-        {
-            return Ok();
-        }
-        [HttpPost("StartRound")]
-        public async Task<ActionResult> StartRound()
-        {
-            return Ok();
-        }
-        [HttpPost("EndRound")]
-        public async Task<ActionResult> EndRound()
-        {
-            return Ok();
-        }
-        [HttpPost("EditRound")]
-        public async Task<ActionResult> EditRound()
-        {
-            return Ok();
+            this.gameService = gameService;
         }
         [HttpPost("CreateUser")]
         public async Task<ActionResult> CreateUser(UserRegisterRequest registerRequest, CancellationToken cancellationToken)
@@ -44,15 +26,50 @@ namespace DODQuiz.API.Controllers
             var result = await profileService.Register(registerRequest, cancellationToken);
             return Ok(result);
         }
-        [HttpPut("EditUser")]
-        public async Task<ActionResult> EditUser()
+        [HttpGet("GetUsers")]
+        public async Task<ActionResult> GetUsers(CancellationToken cancellationToken)
         {
             return Ok();
         }
-        [HttpDelete("DeleteUser")]
-        public async Task<ActionResult> DeleteUser()
+
+        [HttpGet("GetQuestionByUser")]
+        public async Task<ActionResult> GetQuestionByUser(Guid userId, CancellationToken cancellationToken)
         {
             return Ok();
         }
+        [HttpGet("GetAllQuestions")]
+        public async Task<ActionResult> GetAllQuestions(CancellationToken cancellationToken)
+        {
+            var result = await gameService.GetAllQuestions(cancellationToken);
+            if (result.IsError)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost("AddQuestion")]
+        public async Task<ActionResult> AddQuestion(QuestionRequest questionRequest, CancellationToken cancellationToken)
+        {
+            var result = await gameService.AddQuestion(questionRequest, cancellationToken);
+            if ( result.IsError)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        [HttpPut("EditQuestion")]
+        public async Task<ActionResult> EditQuestion(Guid id, QuestionRequest questionRequest, CancellationToken cancellationToken)
+        {
+            return Ok();
+        }
+        [HttpDelete("DeleteQuestion")]
+        public async Task<ActionResult> DeleteQuestion(Guid questionId, CancellationToken cancellationToken)
+        {
+            
+            
+            return Ok();
+        }
+
     }
 }

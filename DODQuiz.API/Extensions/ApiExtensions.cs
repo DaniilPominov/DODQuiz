@@ -12,7 +12,7 @@ namespace DODQuiz.API.Extensions
         {
             
             services.AddTransient<IProfileService, ProfileService>();
-            services.AddSingleton<IGameService, GameService>();
+            services.AddScoped<IGameService, GameService>();
         }
         public static void AddApiAuth(this IServiceCollection services, IConfiguration configuration)
         {
