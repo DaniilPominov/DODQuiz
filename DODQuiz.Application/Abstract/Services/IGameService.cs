@@ -19,7 +19,7 @@ namespace DODQuiz.Application.Abstract.Services
         Task<ErrorOr<List<User>>> GetAllInGameUsers(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> AddUserToGame(Guid userId, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> RemoveUserFromGame(Guid userId, CancellationToken cancellationToken);
-        Task<ErrorOr<Success>> ChangeUserQuestion(Guid userId, Question question, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> ChangeUserQuestion(Guid userId, Guid questionId, CancellationToken cancellationToken);
 
 
     }
