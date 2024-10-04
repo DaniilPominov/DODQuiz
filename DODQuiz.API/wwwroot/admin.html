@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница с таймером и изображениями</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-image: url('https://via.placeholder.com/1920x1080'); /* Фоновое изображение */
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        #timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .image-frame {
+            margin: 0 10px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 200px; /* Ширина рамки */
+        }
+
+            .image-frame img {
+                width: 100%;
+                height: auto;
+            }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <div id="timer">Таймер: 00:00</div>
+
+    <div class="image-container">
+        <div class="image-frame">
+            <img src="https://via.placeholder.com/200" alt="Изображение 1">
+        </div>
+        <div class="image-frame">
+            <img src="https://via.placeholder.com/200" alt="Изображение 2">
+        </div>
+        <div class="image-frame">
+            <img src="https://via.placeholder.com/200" alt="Изображение 3">
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="button">Кнопка 1</button>
+        <button class="button">Кнопка 2</button>
+        <button class="button">Кнопка 3</button>
+    </div>
+
+    <script>
+        // Пример таймера
+        let seconds = 0;
+        setInterval(() => {
+            seconds++;
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            document.getElementById('timer').textContent = `Таймер: ${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body>
+</html>

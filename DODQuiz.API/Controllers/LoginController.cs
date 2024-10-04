@@ -19,7 +19,7 @@ namespace DODQuiz.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(UserLoginRequest loginRequest)
         {
-            var userToken = await profileService.Login(loginRequest.name, loginRequest.password);
+            var userToken = await profileService.Login(loginRequest.username, loginRequest.password);
             if (userToken.IsError == true)
             {
                 return BadRequest(userToken.Errors);

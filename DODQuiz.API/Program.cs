@@ -1,5 +1,7 @@
 using DODQuiz.API.Extensions;
 using DODQuiz.Infrastructure;
+using System.Net.Sockets;
+using System.Net;
 namespace DODQuiz.API
 {
     public class Program
@@ -21,6 +23,8 @@ namespace DODQuiz.API
             builder.Services.AddApiAuth(builder.Configuration);
             var app = builder.Build();
 
+            string LocalIp = LocalIPAddress();
+            app.Urls.Add("http://" + LocalIp + ":5072");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -28,14 +32,30 @@ namespace DODQuiz.API
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
-
+            app.UseFileServer();
             app.MapControllers();
 
             app.Run();
+        }
+        static string LocalIPAddress()
+        {
+            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            {
+                socket.Connect("8.8.8.8", 65530);
+                IPEndPoint? endPoint = socket.LocalEndPoint as IPEndPoint;
+                if (endPoint != null)
+                {
+                    return endPoint.Address.ToString();
+                }
+                else
+                {
+                    return "127.0.0.1";
+                }
+            }
         }
     }
 }
