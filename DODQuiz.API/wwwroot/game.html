@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Защищенная страница</title>
     <link rel="stylesheet" type="text/css" href="css/game.css" />
+    <link rel="stylesheet" type="text/css" href="css/security.css" />
 </head>
 <body>
-    <div class="content" id="protectedContent">
-        <h1>Защищенное содержимое</h1>
-        <p>Это содержимое доступно только авторизованным пользователям с достаточными правами.</p>
-    </div>
     <div class="error-message" id="errorMessage"></div>
-
+    <div id="loading">Проверка аутентификации...</div>
+    <div class="error-message" id="errorMessage"></div>
+    <div class="content" id="Content">
+        <div class="content" id="protectedContent">
+            Тут могла быть ваша игра
+            <img src="https://steamuserimages-a.akamaihd.net/ugc/1876337554557461496/1E9DFA017A38A15A1D01A1FFA9402FC02EA6BCA4/?imw=512&amp;imh=341&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true" />
+        </div>
+    </div>
     <script src="js/GameScript.js">
-        
+    </script>
+    <script src="js/CheckAuthScript.js">
+
     </script>
 </body>
 </html>

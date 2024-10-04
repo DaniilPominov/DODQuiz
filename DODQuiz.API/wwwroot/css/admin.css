@@ -10,10 +10,6 @@
     position: relative;
 }
 
-#protectedContent {
-    display: none;
-}
-
 #timer {
     position: absolute;
     top: 20px;
