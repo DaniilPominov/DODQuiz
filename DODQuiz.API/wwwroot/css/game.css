@@ -1,0 +1,13 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.content {
+    display: none; /* Скрываем содержимое по умолчанию */
+}
+
+.error-message {
+    color: red;
+}

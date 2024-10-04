@@ -4,71 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Страница с таймером и изображениями</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background-image: url('https://via.placeholder.com/1920x1080'); /* Фоновое изображение */
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        #protectedContent{
-            display:none;
-        }
-
-        #timer {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 20px;
-        }
-
-        .image-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .image-frame {
-            margin: 0 10px;
-            border: 2px solid #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            width: 200px; /* Ширина рамки */
-        }
-
-            .image-frame img {
-                width: 100%;
-                height: auto;
-            }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-            .button:hover {
-                background-color: #0056b3;
-            }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/admin.css" />
 </head>
 <body>
     <div id="loading">Проверка аутентификации...</div>
@@ -95,56 +31,7 @@
             </div>
         </div>
     </div>
-        <script>
-            // Пример таймера
-            let seconds = 0;
-            setInterval(() => {
-                seconds++;
-                const minutes = Math.floor(seconds / 60);
-                const remainingSeconds = seconds % 60;
-                document.getElementById('timer').textContent = `Таймер: ${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-            }, 1000);
-            async function checkAuthentication() {
-                try {
-                    const response = await fetch('api/Login/CheckRoles'); // Замените на ваш API эндпоинт
-                    if (!response.ok) {
-                        window.location.href = '/login.html'; // Замените на ваш URL страницы логина
-                        //            console.log(response);
-                        return;
-                    }
-                    const data = await response.json();
-                    return data; // Ожидаем, что сервер вернет объект с информацией о пользователе
-                } catch (error) {
-                    console.error("Ошибка:", error);
-                    return null; // Возвращаем null в случае ошибки
-                }
-            }
-
-            // Функция для инициализации
-            async function initialize() {
-                const userData = await checkAuthentication();
-                const loadingDiv = document.getElementById('loading');
-                const contentDiv = document.getElementById('protectedContent');
-                const errorDiv = document.getElementById('errorMessage');
-
-                if (userData) {
-                    // Проверяем, есть ли у пользователя необходимые роли
-                    if (userData.userroles.includes('admin')) { // Замените на ваши роли
-                        loadingDiv.style.display = 'none'; // Скрываем сообщение о загрузке
-                        contentDiv.style.display = 'block'; // Показываем содержимое
-                    } else {
-                        contentDiv.innerHTML = '';
-                        loadingDiv.style.display = 'none';
-                        errorDiv.textContent = "У вас нет доступа к этому содержимому.";
-                    }
-                } else {
-                    loadingDiv.style.display = 'none';
-                    errorDiv.textContent = "Не удалось проверить аутентификацию.";
-                }
-            }
-
-            // Запуск инициализации
-            initialize();
+        <script src="js/AdminScript.js">
         </script>
 </body>
 </html>
