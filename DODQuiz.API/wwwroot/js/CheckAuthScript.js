@@ -23,7 +23,7 @@ async function initialize() {
         // Проверяем, есть ли у пользователя необходимые роли
         if (userData.userroles.includes('admin')) { // Замените на ваши роли
             loadingDiv.style.display = 'none'; // Скрываем сообщение о загрузке
-            contentDiv.style.display = 'block'; // Показываем содержимое
+            contentDiv.style.display = 'flex'; // Показываем содержимое
         } else {
             contentDiv.innerHTML = '';
             loadingDiv.style.display = 'none';

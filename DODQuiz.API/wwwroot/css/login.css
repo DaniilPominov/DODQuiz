@@ -36,7 +36,7 @@ h2 {
         border-radius: 4px;
     }
 
-.submit-button {
+.submit-login {
     width: 100%;
     padding: 10px;
     background-color: #007BFF;
@@ -47,6 +47,6 @@ h2 {
     transition: background-color 0.3s;
 }
 
-    .submit-button:hover {
+    .submit-login:hover {
         background-color: #0056b3;
     }

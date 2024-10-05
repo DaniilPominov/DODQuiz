@@ -1,5 +1,5 @@
 ﻿function login() {
-    document.getElementById('submitButton').addEventListener('click', function () {
+    document.getElementById('submitLogin').addEventListener('click', function () {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
