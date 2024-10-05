@@ -15,10 +15,13 @@ namespace DODQuiz.Application.Services
     {
         private readonly IUserRepos _userRepository;
         private readonly IQuestionRepos _questionRepository;
-        private List<Question> _questions = new();
-        private List<User> _users = new();
-        private Dictionary<User,Question> _userToQuestion = new();
-        private Dictionary<User,string> _userToCategory = new();
+        //idn have enough time to fix it
+        private static List<Question> _questions = new();
+        private static List<User> _users = new();
+        private static Dictionary<User,Question> _userToQuestion = new();
+        private static Dictionary<User,string> _userToCategory = new();
+        private static Dictionary<string, List<Guid>> _recentQuestions = new();
+        private const int _recentDepth = 2;
         public GameService(IUserRepos userRepository, IQuestionRepos questionRepository)
         {
             _userRepository = userRepository;
@@ -69,6 +72,10 @@ namespace DODQuiz.Application.Services
             {
                 return Error.NotFound();
             }
+            if (!_users.Contains(user.Value))
+            {
+                await AddUserToGame(userId, cancellationToken);
+            }
             _userToCategory[user.Value] = categoryName;
             return Result.Success;
         }
@@ -112,6 +119,43 @@ namespace DODQuiz.Application.Services
         public async Task<ErrorOr<List<User>>> GetAllInGameUsers(CancellationToken cancellationToken)
         {
             return _users;
+        }
+
+        public async Task<ErrorOr<Success>> StartRound(CancellationToken cancellationToken)
+        {
+            return await GenerateQuesitons(cancellationToken);
+        }
+        private async Task<ErrorOr<Success>> GenerateQuesitons(CancellationToken cancellationToken)
+        {
+
+            if (_questions.Count == 0)
+            {
+                var questions = await _questionRepository.GetAllAsync(cancellationToken);
+                _questions = questions.Value;
+            }
+            foreach(var user in _userToCategory.Keys)
+            {
+                var categoryname = _userToCategory[user];
+                var category = _questions.Where(q => q.Category == categoryname).ToList();
+                var random = new Random();
+                var newquestion = category[random.Next(category.Count)];
+                if (!_recentQuestions.Keys.Contains(categoryname))
+                {
+                    _recentQuestions[categoryname] = new List<Guid>() { newquestion.Id };
+                }
+                while (_recentQuestions[categoryname].Contains(newquestion.Id))
+                {
+                    newquestion = category[random.Next(category.Count)];
+                }
+                if (_recentQuestions[categoryname].Count >= _recentDepth)
+                {
+                    _recentQuestions[categoryname].RemoveAt(_recentDepth-1);
+                }
+                _recentQuestions[categoryname].Add(newquestion.Id);
+
+                _userToQuestion[user] = newquestion;
+            }
+            return Result.Success;
         }
     }
 }

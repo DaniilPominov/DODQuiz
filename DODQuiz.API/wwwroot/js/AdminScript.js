@@ -128,6 +128,22 @@ async function submitSelection(i) {
         document.getElementById(`result${i}`).textContent = 'Не удалось сохранить категорию.';
     }
 }
+async function startround() {
+    try {
+        const response = await fetch(`/api/Game/StartRound`, {
+            method: 'POST'
+        });
+
+        if (!response.ok) throw new Error('Ошибка при старте раунда');
+        return response;
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function stopround() {
+
+}
 async function combinepage() {
     let userList = await loadUsers();
     let categoryList = await loadCategories();
@@ -142,5 +158,11 @@ async function combinepage() {
         loadCategoriesToSelect(j, categoryList);
     }
 }
-combinepage();
+document.addEventListener('DOMContentLoaded', combinepage());
+
+const startbutton = document.getElementById("start-round-button");
+startbutton.addEventListener("click", startround);
+console.log(startbutton);
+const stopbutton = document.getElementById("stop-round-button");
+stopbutton.addEventListener("click", stopround);
 starttimer();

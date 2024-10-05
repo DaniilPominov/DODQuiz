@@ -22,9 +22,14 @@ namespace DODQuiz.API.Controllers
         }
         [Authorize(Policy = "admin")]
         [HttpPost("StartRound")]
-        public async Task<ActionResult> StartRound()
+        public async Task<ActionResult> StartRound(CancellationToken cancellation)
         {
-            return Ok();
+           var result =  await gameService.StartRound(cancellation);
+            if (result.IsError)
+            {
+                return BadRequest();
+            }
+            return Ok(result.Value);
         }
         [Authorize(Policy = "admin")]
         [HttpPost("EndRound")]
