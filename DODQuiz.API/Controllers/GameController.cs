@@ -37,5 +37,15 @@ namespace DODQuiz.API.Controllers
         {
             return Ok();
         }
+        [HttpGet("GetCategories")]
+        public async Task<ActionResult> GetCategories(CancellationToken cancellationToken)
+        {
+            var result = await gameService.GetQuestionsCategories(cancellationToken);
+            if (result.IsError)
+            {
+                return BadRequest();
+            }
+            return Ok(result.Value);
+        }
     }
 }

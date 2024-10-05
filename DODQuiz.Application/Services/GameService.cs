@@ -22,6 +22,7 @@ namespace DODQuiz.Application.Services
         {
             _userRepository = userRepository;
             _questionRepository = questionRepository;
+            _questions = _questionRepository.GetAllAsync(CancellationToken.None).Result.Value;
         }
         public async Task<ErrorOr<List<User>>> GetAllUsers(CancellationToken cancellationToken)
         {
@@ -63,6 +64,13 @@ namespace DODQuiz.Application.Services
         public async Task<ErrorOr<List<Question>>> GetAllQuestions(CancellationToken cancellationToken)
         {
             return await _questionRepository.GetAllAsync(cancellationToken);
+        }
+        public async Task<ErrorOr<List<string>>> GetQuestionsCategories(CancellationToken cancellationToken)
+        {
+            List<string> categories = new List<string>();
+            categories = _questions.Select(q=> q.Category).Distinct().ToList();
+            return categories;
+
         }
         public async Task<ErrorOr<Success>> AddQuestion(QuestionRequest questionRequest,CancellationToken cancellationToken)
         {
