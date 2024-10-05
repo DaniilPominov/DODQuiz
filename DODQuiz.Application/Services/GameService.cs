@@ -18,6 +18,7 @@ namespace DODQuiz.Application.Services
         private List<Question> _questions = new();
         private List<User> _users = new();
         private Dictionary<User,Question> _userToQuestion = new();
+        private Dictionary<User,string> _userToCategory = new();
         public GameService(IUserRepos userRepository, IQuestionRepos questionRepository)
         {
             _userRepository = userRepository;
@@ -60,6 +61,16 @@ namespace DODQuiz.Application.Services
             _userToQuestion[user] = question;
             return Result.Success;
 
+        }
+        public async Task<ErrorOr<Success>> ChangeUserQuestionCategory(Guid userId, string categoryName, CancellationToken cancellationToken)
+        {
+            var user = await _userRepository.GetByIdAsync(userId,cancellationToken);
+            if (user.IsError) 
+            {
+                return Error.NotFound();
+            }
+            _userToCategory[user.Value] = categoryName;
+            return Result.Success;
         }
         public async Task<ErrorOr<List<Question>>> GetAllQuestions(CancellationToken cancellationToken)
         {

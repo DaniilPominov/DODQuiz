@@ -21,7 +21,7 @@ namespace DODQuiz.Application.Abstract.Services
         Task<ErrorOr<Success>> RemoveUserFromGame(Guid userId, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ChangeUserQuestion(Guid userId, Guid questionId, CancellationToken cancellationToken);
         Task<ErrorOr<List<string>>> GetQuestionsCategories(CancellationToken cancellationToken);
-
+        Task<ErrorOr<Success>> ChangeUserQuestionCategory(Guid userId, string categoryName, CancellationToken cancellationToken);
 
     }
 }

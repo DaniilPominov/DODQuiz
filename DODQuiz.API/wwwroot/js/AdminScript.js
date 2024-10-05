@@ -32,7 +32,7 @@ function generateborders(k) {
 
                     <br><br>
 
-                        <button id="submitUserCategory${i}">Подтвердить выбор</button>
+                        <button id="submitUserCategory${i}" onclick="submitSelection(${i})">Подтвердить выбор</button>
                         <div id="result${i}"></div>
     </div>`;
 
@@ -102,30 +102,30 @@ async function loadCategoriesToSelect(i, categoriesList) {
 }
 
 // Функция для отправки выбранных данных
-async function submitSelection() {
-    const userId = document.getElementById('userSelect').value;
-    const categoryId = document.getElementById('categorySelect').value;
+async function submitSelection(i) {
+    const userId = document.getElementById(`userSelect${i}`).value;
+    const categoryName = document.getElementById(`categorySelect${i}`).value;
 
-    if (!userId || !categoryId) {
-        document.getElementById('result').textContent = 'Пожалуйста, выберите пользователя и категорию.';
+    if (!userId || !categoryName) {
+        document.getElementById(`result${i}`).textContent = 'Пожалуйста, выберите пользователя и категорию.';
         return;
     }
 
     try {
-        const response = await fetch('/api/SetCategory', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userId, categoryId }) // Отправляем выбранные данные в формате JSON
+        const response = await fetch(`/api/Admin/SetUserCategory?userId=${userId}&categoryName=${categoryName}`, {
+            method: 'POST'//,
+            //headers: {
+            //    'Content-Type': 'application/json'
+            //},
+            //body: JSON.stringify({ userId, categoryName }) // Отправляем выбранные данные в формате JSON
         });
 
         if (!response.ok) throw new Error('Ошибка при сохранении категории');
 
-        document.getElementById('result').textContent = 'Категория успешно сохранена!';
+        document.getElementById(`result${i}`).textContent = 'Категория успешно сохранена!';
     } catch (error) {
         console.error(error);
-        document.getElementById('result').textContent = 'Не удалось сохранить категорию.';
+        document.getElementById(`result${i}`).textContent = 'Не удалось сохранить категорию.';
     }
 }
 async function combinepage() {

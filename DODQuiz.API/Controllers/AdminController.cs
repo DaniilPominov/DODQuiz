@@ -26,6 +26,16 @@ namespace DODQuiz.API.Controllers
             var result = await profileService.Register(registerRequest, cancellationToken);
             return Ok(result);
         }
+        [HttpPost("SetUserCategory")]
+        public async Task<ActionResult> SetUserCategory(Guid userId,string categoryName, CancellationToken cancellationToken)
+        {
+            var result = await gameService.ChangeUserQuestionCategory(userId, categoryName, cancellationToken);
+            if (result.IsError)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result.Value);
+        }
         [HttpGet("GetUsers")]
         public async Task<ActionResult> GetUsers(CancellationToken cancellationToken)
         {
