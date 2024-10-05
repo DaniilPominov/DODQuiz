@@ -1,1 +1,78 @@
-﻿
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('https://via.placeholder.com/1920x1080/cccccc/000000?text=Background+Image');
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.background {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    background-image: url('https://via.placeholder.com/800/ffffff/000000?text=Container+Background');
+    width: 50vw;
+    height: 70vh;
+    background-size: cover;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image {
+    max-width: 100%;
+    height: auto;
+}
+
+.text {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.input-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text-input {
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .submit-button:hover {
+        background-color: #0056b3;
+    }
+
+content{
+    display: flex;
+    justify-content:center;
+}

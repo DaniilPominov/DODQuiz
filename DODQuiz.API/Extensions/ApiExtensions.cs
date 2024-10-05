@@ -10,7 +10,7 @@ namespace DODQuiz.API.Extensions
     {
         public static void AddQuizGame(this IServiceCollection services)
         {
-            
+
             services.AddTransient<IProfileService, ProfileService>();
             services.AddScoped<IGameService, GameService>();
         }

@@ -1,7 +1,6 @@
 ﻿using DODQuiz.Application.Abstract.Services;
 using DODQuiz.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DODQuiz.API.Controllers
@@ -27,7 +26,7 @@ namespace DODQuiz.API.Controllers
             return Ok(result);
         }
         [HttpPost("SetUserCategory")]
-        public async Task<ActionResult> SetUserCategory(Guid userId,string categoryName, CancellationToken cancellationToken)
+        public async Task<ActionResult> SetUserCategory(Guid userId, string categoryName, CancellationToken cancellationToken)
         {
             var result = await gameService.ChangeUserQuestionCategory(userId, categoryName, cancellationToken);
             if (result.IsError)
@@ -101,7 +100,7 @@ namespace DODQuiz.API.Controllers
             {
                 return BadRequest(result);
             }
-            
+
             return Ok(result);
         }
 

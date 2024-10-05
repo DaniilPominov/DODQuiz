@@ -3,11 +3,6 @@ using DODQuiz.Application.Abstract.Services;
 using DODQuiz.Contracts;
 using DODQuiz.Core.Entyties;
 using ErrorOr;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DODQuiz.Application.Services
 {
@@ -18,10 +13,10 @@ namespace DODQuiz.Application.Services
         //idn have enough time to fix it
         private static List<Question> _questions = new();
         private static List<User> _users = new();
-        private static Dictionary<User,Question> _userToQuestion = new();
-        private static Dictionary<User,string> _userToCategory = new();
+        private static Dictionary<User, Question> _userToQuestion = new();
+        private static Dictionary<User, string> _userToCategory = new();
         private static Dictionary<string, List<Guid>> _recentQuestions = new();
-        private const int _recentDepth = 2;
+        private const int _recentDepth = 2;//5 in release
         public GameService(IUserRepos userRepository, IQuestionRepos questionRepository)
         {
             _userRepository = userRepository;
@@ -67,8 +62,8 @@ namespace DODQuiz.Application.Services
         }
         public async Task<ErrorOr<Success>> ChangeUserQuestionCategory(Guid userId, string categoryName, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(userId,cancellationToken);
-            if (user.IsError) 
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+            if (user.IsError)
             {
                 return Error.NotFound();
             }
@@ -86,11 +81,11 @@ namespace DODQuiz.Application.Services
         public async Task<ErrorOr<List<string>>> GetQuestionsCategories(CancellationToken cancellationToken)
         {
             List<string> categories = new List<string>();
-            categories = _questions.Select(q=> q.Category).Distinct().ToList();
+            categories = _questions.Select(q => q.Category).Distinct().ToList();
             return categories;
 
         }
-        public async Task<ErrorOr<Success>> AddQuestion(QuestionRequest questionRequest,CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> AddQuestion(QuestionRequest questionRequest, CancellationToken cancellationToken)
         {
             var question = Question.Create(
                 Guid.NewGuid(),
@@ -98,7 +93,7 @@ namespace DODQuiz.Application.Services
                 questionRequest.description,
                 questionRequest.category,
                 questionRequest?.imageUri);
-            return await _questionRepository.AddAsync(question.Value,cancellationToken);
+            return await _questionRepository.AddAsync(question.Value, cancellationToken);
         }
 
         public async Task<ErrorOr<Success>> DeleteQuestion(Guid questionId, CancellationToken cancellationToken)
@@ -133,7 +128,7 @@ namespace DODQuiz.Application.Services
                 var questions = await _questionRepository.GetAllAsync(cancellationToken);
                 _questions = questions.Value;
             }
-            foreach(var user in _userToCategory.Keys)
+            foreach (var user in _userToCategory.Keys)
             {
                 var categoryname = _userToCategory[user];
                 var category = _questions.Where(q => q.Category == categoryname).ToList();
@@ -149,7 +144,7 @@ namespace DODQuiz.Application.Services
                 }
                 if (_recentQuestions[categoryname].Count >= _recentDepth)
                 {
-                    _recentQuestions[categoryname].RemoveAt(_recentDepth-1);
+                    _recentQuestions[categoryname].RemoveAt(_recentDepth - 1);
                 }
                 _recentQuestions[categoryname].Add(newquestion.Id);
 

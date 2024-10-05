@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DODQuiz.Infrastructure.Data.Repos
 {
-    public class UserRepos : BaseRepository<User>,IUserRepos
+    public class UserRepos : BaseRepository<User>, IUserRepos
 
     {
         public UserRepos(GameContext gameContext) : base(gameContext) { }

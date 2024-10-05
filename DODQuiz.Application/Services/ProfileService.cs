@@ -4,11 +4,6 @@ using DODQuiz.Application.Abstract.Services;
 using DODQuiz.Contracts;
 using DODQuiz.Core.Entyties;
 using ErrorOr;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DODQuiz.Application.Services
 {
@@ -42,13 +37,13 @@ namespace DODQuiz.Application.Services
             var hashedPassword = _passwordHasher.Generate(userRegisterRequest.password);
 
             var userRoles = await GetUserRolesAsync(cancellationToken);
-            var userRole = userRoles.Value.Where(r=> r.Name=="user").FirstOrDefault();
+            var userRole = userRoles.Value.Where(r => r.Name == "user").FirstOrDefault();
 
             return User.Create(
-                id:Guid.NewGuid(),
-                name:userRegisterRequest.name,
-                password:hashedPassword,
-                roles:new List<Role>() { userRole ?? Role.Create(Guid.NewGuid(),"user",new List<User>()).Value });
+                id: Guid.NewGuid(),
+                name: userRegisterRequest.name,
+                password: hashedPassword,
+                roles: new List<Role>() { userRole ?? Role.Create(Guid.NewGuid(), "user", new List<User>()).Value });
 
         }
         public async Task<ErrorOr<string>> Login(string Name, string Password)

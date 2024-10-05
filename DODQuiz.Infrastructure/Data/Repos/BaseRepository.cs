@@ -2,11 +2,6 @@
 using DODQuiz.Infrastructure.Data.Context;
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DODQuiz.Infrastructure.Data.Repos
 {
@@ -56,7 +51,7 @@ namespace DODQuiz.Infrastructure.Data.Repos
         {
             try
             {
-                await _context.Set<T>().Where(e=>e.Id==id).ExecuteDeleteAsync(cancellationToken);
+                await _context.Set<T>().Where(e => e.Id == id).ExecuteDeleteAsync(cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return ErrorOr.Result.Success;

@@ -11,9 +11,9 @@ namespace DODQuiz.Core.Entyties
         public string Description { get; set; }
         public string Category { get; set; }
         public string ImageUri { get; set; } = null!;
-        public static ErrorOr<Question> Create(Guid id,string name, string Description, string Category, string? ImageUri)
+        public static ErrorOr<Question> Create(Guid id, string name, string Description, string Category, string? ImageUri)
         {
-            return new Question() {Id = id, Name = name, Description = Description, Category = Category, ImageUri = ImageUri };
+            return new Question() { Id = id, Name = name, Description = Description, Category = Category, ImageUri = ImageUri };
         }
     }
 }

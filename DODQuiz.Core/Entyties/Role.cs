@@ -12,7 +12,7 @@ namespace DODQuiz.Core.Entyties
 
         public static ErrorOr<Role> Create(Guid id, string name, List<User> users)
         {
-            return new Role() { Id=id,Name=name,Users=users };
+            return new Role() { Id = id, Name = name, Users = users };
         }
     }
 }

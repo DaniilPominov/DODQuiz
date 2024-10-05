@@ -1,9 +1,7 @@
 ﻿using DODQuiz.Application.Abstract.Services;
 using DODQuiz.Contracts;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace DODQuiz.API.Controllers
 {
@@ -31,11 +29,11 @@ namespace DODQuiz.API.Controllers
         [HttpGet("CheckRoles")]
         public async Task<ActionResult> CheckRoles()
         {
-            var userRoles = HttpContext.User.Claims.Where(c=> c.Type == ClaimTypes.Role).ToList();
+            var userRoles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
             if (userRoles.Count == 0)
             {
                 return BadRequest();
-                
+
             }
             var Roles = new List<string>();
             foreach (var role in userRoles)
@@ -43,7 +41,7 @@ namespace DODQuiz.API.Controllers
                 Roles.Add(role.Value);
             }
 
-            return Ok(new RolesResponse(userroles:Roles));
+            return Ok(new RolesResponse(userroles: Roles));
         }
     }
 }

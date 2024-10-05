@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DODQuiz.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Policy ="user")]
+    [Authorize(Policy = "user")]
     [ApiController]
     public class GameController : ControllerBase
     {
@@ -17,14 +17,14 @@ namespace DODQuiz.API.Controllers
         [HttpGet("GetMyQuestion")]
         public async Task<ActionResult> GetMyQuestions()
         {
-            var id = HttpContext.User.Claims.Where(c=> c.Type== "UserId").FirstOrDefault();
+            var id = HttpContext.User.Claims.Where(c => c.Type == "UserId").FirstOrDefault();
             return Ok();
         }
         [Authorize(Policy = "admin")]
         [HttpPost("StartRound")]
         public async Task<ActionResult> StartRound(CancellationToken cancellation)
         {
-           var result =  await gameService.StartRound(cancellation);
+            var result = await gameService.StartRound(cancellation);
             if (result.IsError)
             {
                 return BadRequest();

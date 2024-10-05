@@ -1,7 +1,7 @@
 using DODQuiz.API.Extensions;
 using DODQuiz.Infrastructure;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 namespace DODQuiz.API
 {
     public class Program

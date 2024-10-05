@@ -1,7 +1,6 @@
 ﻿using DODQuiz.Application.Abstract.Repos;
 using DODQuiz.Core.Entyties;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DODQuiz.API.Controllers
@@ -18,7 +17,7 @@ namespace DODQuiz.API.Controllers
         }
         [HttpPost("CreateRole")]
 
-        public async Task<ActionResult> CreateRole(string name,CancellationToken cancellationToken)
+        public async Task<ActionResult> CreateRole(string name, CancellationToken cancellationToken)
         {
             var role = Role.Create(Guid.NewGuid(), name, new List<User>()).Value;
             await roleRepos.AddAsync(role, cancellationToken);
