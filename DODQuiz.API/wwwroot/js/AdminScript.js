@@ -9,8 +9,11 @@ function starttimer() {
     }, 1000);
 }
 function generateborders(k) {
-    const contentdiv = document.getElementById("protectedContent");
-    contentdiv.innerHTML = '';
+    const protectedDiv = document.getElementById("protectedContent");
+    const contentdiv = document.createElement("div");
+    contentdiv.className = "pagecontent";
+    protectedDiv.innerHTML = '';
+    protectedDiv.appendChild(contentdiv);
     for (let i = 1; i <= k; i++) {
         let cell = document.createElement("div");
         cell.id = `user-container${i}`;
@@ -38,6 +41,28 @@ function generateborders(k) {
 
         contentdiv.appendChild(cell);
     }
+    //let buttonsDiv = document.createElement("div");
+    //buttonsDiv.innerHTML = `<button class="button" id="stop-round-button">Стоп</button>
+    //        <button class="button" id="start-round-button">Старт</button>`;
+    let buttonDiv = document.createElement("div");
+    buttonDiv.className = "button-container";
+    buttonDiv.innerHTML = "<br>";
+
+    let buttonstart = document.createElement("button");
+    buttonstart.id = "start-round-button";
+    buttonstart.textContent = "Старт";
+    buttonstart.className = "button";
+    buttonstart.addEventListener("click", startround);
+
+    let buttonend = document.createElement("button");
+    buttonend.id = "stop-round-button";
+    buttonend.textContent = "Завершить";
+    buttonend.className = "button";
+    buttonend.addEventListener("click", stopround);
+
+    buttonDiv.appendChild(buttonstart);
+    buttonDiv.appendChild(buttonend);
+    protectedDiv.appendChild(buttonDiv);
 }
 async function loadUsers() {
     try {
@@ -159,10 +184,4 @@ async function combinepage() {
     }
 }
 document.addEventListener('DOMContentLoaded', combinepage());
-
-const startbutton = document.getElementById("start-round-button");
-startbutton.addEventListener("click", startround);
-console.log(startbutton);
-const stopbutton = document.getElementById("stop-round-button");
-stopbutton.addEventListener("click", stopround);
 starttimer();

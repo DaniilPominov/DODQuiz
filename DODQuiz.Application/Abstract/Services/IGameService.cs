@@ -18,6 +18,7 @@ namespace DODQuiz.Application.Abstract.Services
         Task<ErrorOr<List<string>>> GetQuestionsCategories(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ChangeUserQuestionCategory(Guid userId, string categoryName, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> StartRound(CancellationToken cancellationToken);
+        Task<ErrorOr<Dictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken);
 
     }
 }

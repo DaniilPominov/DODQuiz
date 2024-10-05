@@ -39,6 +39,13 @@ namespace DODQuiz.API
             app.UseFileServer();
             app.MapControllers();
 
+            var webSocketOptions = new WebSocketOptions
+            {
+                KeepAliveInterval = TimeSpan.FromMinutes(20)
+            };
+
+            app.UseWebSockets(webSocketOptions);
+            //app.UseRouting();
             app.Run();
         }
         static string LocalIPAddress()

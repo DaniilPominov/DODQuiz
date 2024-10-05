@@ -8,20 +8,20 @@
     <link rel="stylesheet" type="text/css" href="css/security.css" />
 </head>
 <body>
+    <div id="access-policy" style="display:none">admin</div>
     <div id="loading">Проверка аутентификации...</div>
     <div class="error-message" id="errorMessage"></div>
-    <div class="content" id="Content">
         <div id="timer">Таймер: 00:00</div>
-        <div class="content" id="protectedContent">
-            loading...
-            </div>
+        <div id="protectedContent">
+            <div class="content">
+                loading...
 
-            <div class="button-container">
-                <button class="button" id="stop-round-button">Стоп</button>
-                <button class="button" id="start-round-button">Старт</button>
+
+                <div class="button-container">
+                </div>
             </div>
         </div>
-    
+
     <script src="js/AdminScript.js">
     </script>
     <script src="js/CheckAuthScript.js">

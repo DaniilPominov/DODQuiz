@@ -23,6 +23,10 @@ namespace DODQuiz.Application.Services
             _questionRepository = questionRepository;
             _questions = _questionRepository.GetAllAsync(CancellationToken.None).Result.Value;
         }
+        public async Task<ErrorOr<Dictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken)
+        {
+            return _userToQuestion;
+        }
         public async Task<ErrorOr<List<User>>> GetAllUsers(CancellationToken cancellationToken)
         {
             var result = await _userRepository.GetAllAsync(cancellationToken);

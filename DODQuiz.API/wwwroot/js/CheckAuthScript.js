@@ -18,12 +18,14 @@ async function initialize() {
     const loadingDiv = document.getElementById('loading');
     const contentDiv = document.getElementById('protectedContent');
     const errorDiv = document.getElementById('errorMessage');
+    const accessDiv = document.getElementById("access-policy");
+    const role = accessDiv.textContent;
 
     if (userData) {
         // Проверяем, есть ли у пользователя необходимые роли
-        if (userData.userroles.includes('admin')) { // Замените на ваши роли
+        if (userData.userroles.includes(role)) { // Замените на ваши роли
             loadingDiv.style.display = 'none'; // Скрываем сообщение о загрузке
-            contentDiv.style.display = 'flex'; // Показываем содержимое
+            contentDiv.style.display = 'block'; // Показываем содержимое
         } else {
             contentDiv.innerHTML = '';
             loadingDiv.style.display = 'none';
