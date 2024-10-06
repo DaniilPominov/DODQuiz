@@ -61,11 +61,6 @@ namespace DODQuiz.API.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("GetQuestionByUser")]
-        public async Task<ActionResult> GetQuestionByUser(Guid userId, CancellationToken cancellationToken)
-        {
-            return Ok();
-        }
         [HttpGet("GetAllQuestions")]
         public async Task<ActionResult> GetAllQuestions(CancellationToken cancellationToken)
         {

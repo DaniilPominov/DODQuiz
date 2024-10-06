@@ -2,7 +2,9 @@
 using DODQuiz.Application.Abstract.Services;
 using DODQuiz.Contracts;
 using DODQuiz.Core.Entyties;
+using System.Collections.Concurrent;
 using ErrorOr;
+using Microsoft.Extensions.Configuration;
 
 namespace DODQuiz.Application.Services
 {
@@ -10,20 +12,25 @@ namespace DODQuiz.Application.Services
     {
         private readonly IUserRepos _userRepository;
         private readonly IQuestionRepos _questionRepository;
+        private readonly IConfiguration _configuration;
         //idn have enough time to fix it
         private static List<Question> _questions = new();
         private static List<User> _users = new();
-        private static Dictionary<User, Question> _userToQuestion = new();
-        private static Dictionary<User, string> _userToCategory = new();
-        private static Dictionary<string, List<Guid>> _recentQuestions = new();
+        private static ConcurrentDictionary<User, Question> _userToQuestion = new();
+        private static ConcurrentDictionary<User, string> _userToCategory = new();
+        private static ConcurrentDictionary<string, List<Guid>> _recentQuestions = new();
+        private static ConcurrentDictionary<Guid,bool> _userStatuses = new();
         private const int _recentDepth = 2;//5 in release
-        public GameService(IUserRepos userRepository, IQuestionRepos questionRepository)
+        private string _rootCode = "";
+        public GameService(IUserRepos userRepository, IQuestionRepos questionRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _questionRepository = questionRepository;
             _questions = _questionRepository.GetAllAsync(CancellationToken.None).Result.Value;
+            _configuration = configuration;
+            _rootCode = _configuration?.GetRequiredSection("QuizOptions:RootCode").Value ?? "bober123";
         }
-        public async Task<ErrorOr<Dictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken)
+        public async Task<ErrorOr<ConcurrentDictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken)
         {
             return _userToQuestion;
         }
@@ -31,6 +38,28 @@ namespace DODQuiz.Application.Services
         {
             var result = await _userRepository.GetAllAsync(cancellationToken);
             return result;
+        }
+        public async Task<ErrorOr<Success>> ChangeUserStatus(Guid id, string code, CancellationToken cancellationToken)
+        {
+            var user = _users.Find(x => x.Id == id);
+            if (user == null)
+            {
+                return Error.NotFound();
+            }
+            if (!_userStatuses.ContainsKey(id))
+            {
+                _userStatuses.TryAdd(id, false);
+            }
+            if (code != _rootCode)
+            {
+                return Error.Forbidden();
+            }
+            _userStatuses[id] = !_userStatuses[id];
+            return Result.Success;
+        }
+        public async Task<ErrorOr<ConcurrentDictionary<Guid, bool>>> GetUsersStatuses(CancellationToken cancellationToken)
+        {
+            return _userStatuses;
         }
         public async Task<ErrorOr<Success>> AddUserToGame(Guid userId, CancellationToken cancellationToken)
         {
@@ -122,6 +151,7 @@ namespace DODQuiz.Application.Services
 
         public async Task<ErrorOr<Success>> StartRound(CancellationToken cancellationToken)
         {
+
             return await GenerateQuesitons(cancellationToken);
         }
         private async Task<ErrorOr<Success>> GenerateQuesitons(CancellationToken cancellationToken)

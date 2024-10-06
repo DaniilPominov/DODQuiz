@@ -1,4 +1,4 @@
-﻿// Пример таймера
+﻿var playercount = 3;
 function starttimer() {
     let seconds = 0;
     setInterval(() => {
@@ -19,7 +19,7 @@ function generateborders(k) {
         cell.id = `user-container${i}`;
         cell.className = `image-container${i}`;
         cell.innerHTML = `<div class="image-frame">
-        <img src="https://via.placeholder.com/200" alt="Изображение ${i}">
+        <img id="user-image${i}" src="https://via.placeholder.com/200" alt="Изображение ${i}">
             <div id="category-container${i}">
                 <label for="userSelect${i}">Выберите пользователя:</label>
                 <select id="userSelect${i}">
@@ -176,12 +176,62 @@ async function combinepage() {
     console.log(userList);
     console.log(`categoryList`);
     console.log(categoryList);
-    let i = 3;
-    generateborders(i);
-    for (let j = 1; j <= i; j++) {
+    generateborders(playercount);
+    for (let j = 1; j <= playercount; j++) {
         loadUsersToSelect(j, userList);
         loadCategoriesToSelect(j, categoryList);
     }
 }
+
+function handleuserstatus(data) {
+    for (let j = 1; j <= playercount; j++) {
+        const userId = document.getElementById(`userSelect${j}`).value;
+        console.log(userId);
+        const status = data[userId]
+        if (status) {
+            let userimg = document.getElementById(`user-image${j}`);
+            userimg.src = "images/key.png";
+        }
+        else {
+            let userimg = document.getElementById(`user-image${j}`);
+            userimg.src = "https://via.placeholder.com/200";
+        }
+        
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', combinepage());
 starttimer();
+var reconnectInterval = 1000;
+var ws;
+
+var connect = function () {
+    ws = new WebSocket('ws://192.168.31.225:5072/wsadmin');
+    ws.onopen = (event) => {
+        console.log("Connection opened");
+    };
+    ws.onerror = (event) => {
+        console.log("Connection error");
+    };
+    ws.onmessage = function (event) {
+        const mes = JSON.parse(event.data);
+        handleuserstatus(mes);
+    };
+    ws.onclose = (event) => {
+        console.log("Connection closed");
+        setTimeout(connect, reconnectInterval);
+    };
+};
+connect();
+//webSocket.onopen = (event) => {
+//    console.log("Connection opened");
+//};
+//webSocket.onmessage = function (event) {
+//    const mes = JSON.parse(event.data);
+//    console.log(mes);
+//};
+
+//webSocket.onclose = (event) => {
+//    console.log("Connection closed");
+//};

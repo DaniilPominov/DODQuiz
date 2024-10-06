@@ -1,6 +1,7 @@
 ﻿using DODQuiz.Contracts;
 using DODQuiz.Core.Entyties;
 using ErrorOr;
+using System.Collections.Concurrent;
 
 namespace DODQuiz.Application.Abstract.Services
 {
@@ -18,7 +19,9 @@ namespace DODQuiz.Application.Abstract.Services
         Task<ErrorOr<List<string>>> GetQuestionsCategories(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ChangeUserQuestionCategory(Guid userId, string categoryName, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> StartRound(CancellationToken cancellationToken);
-        Task<ErrorOr<Dictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken);
+        Task<ErrorOr<ConcurrentDictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> ChangeUserStatus(Guid id, string code, CancellationToken cancellationToken);
+        Task<ErrorOr<ConcurrentDictionary<Guid, bool>>> GetUsersStatuses(CancellationToken cancellationToken);
 
     }
 }
