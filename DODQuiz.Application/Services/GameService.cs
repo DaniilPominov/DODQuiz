@@ -2,9 +2,9 @@
 using DODQuiz.Application.Abstract.Services;
 using DODQuiz.Contracts;
 using DODQuiz.Core.Entyties;
-using System.Collections.Concurrent;
 using ErrorOr;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Concurrent;
 
 namespace DODQuiz.Application.Services
 {
@@ -19,9 +19,10 @@ namespace DODQuiz.Application.Services
         private static ConcurrentDictionary<User, Question> _userToQuestion = new();
         private static ConcurrentDictionary<User, string> _userToCategory = new();
         private static ConcurrentDictionary<string, List<Guid>> _recentQuestions = new();
-        private static ConcurrentDictionary<Guid,bool> _userStatuses = new();
+        private static ConcurrentDictionary<Guid, bool> _userStatuses = new();
         private const int _recentDepth = 2;//5 in release
         private string _rootCode = "";
+
         public GameService(IUserRepos userRepository, IQuestionRepos questionRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;

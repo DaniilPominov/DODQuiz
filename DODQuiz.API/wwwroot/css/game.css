@@ -3,6 +3,15 @@
     padding: 0;
     box-sizing: border-box;
 }
+#timer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 20px;
+}
 
 body {
     font-family: Arial, sans-serif;
@@ -77,3 +86,40 @@ content{
     display: flex;
     justify-content:center;
 }
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed; /* Окно фиксировано */
+    z-index: 1; /* На переднем плане */
+    left: 0;
+    top: 0;
+    width: 100%; /* Полная ширина */
+    height: 100%; /* Полная высота */
+    overflow: auto; /* Включает прокрутку, если необходимо */
+    background-color: rgb(0,0,0); /* Черный фон */
+    background-color: rgba(0,0,0,0.4); /* Черный фон с прозрачностью */
+}
+
+/* Стиль для самого модального окна */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Центрирование окна */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ширина окна */
+    position: relative; /* Для позиционирования крестика */
+}
+
+/* Стиль для кнопки закрытия */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }

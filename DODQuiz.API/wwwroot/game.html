@@ -8,10 +8,16 @@
     <link rel="stylesheet" type="text/css" href="css/security.css" />
 </head>
 <body>
+    <div id="myModal" class="modal">
+        <div id="modal-content" class="modal-content">
+            <span id="modal-close" class="close">&times;</span>
+        </div>
+    </div>
     <div class="error-message" id="errorMessage"></div>
     <div id="loading">Проверка аутентификации...</div>
     <div id="access-policy" style="display:none">user</div>
     <div class="error-message" id="errorMessage"></div>
+    <div id="timer">Таймер: 00:00</div>
     <div class="content" id="Content">
         <div class="content" id="protectedContent">
             <div class="background">

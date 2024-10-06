@@ -1,12 +1,27 @@
 ﻿var playercount = 3;
+var timerInterval = 1000;
 function starttimer() {
-    let seconds = 0;
-    setInterval(() => {
-        seconds++;
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        document.getElementById('timer').textContent = `Таймер: ${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-    }, 1000);
+    setInterval(async () => {
+        const response = await fetch('/api/Game/Timer');
+        if (response.ok) {
+            document.getElementById('timer').innerHTML = ":";
+            let timeRemaining = await response.json();
+            if (timeRemaining <= 0) {
+                clearInterval();
+            }
+            let time = convertSeconds(timeRemaining);
+            document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
+        }
+    }, timerInterval);
+}
+function convertSeconds(totalSeconds) {
+    const minutes = Math.floor(totalSeconds / 60); // Получаем полные минуты
+    const seconds = totalSeconds % 60; // Получаем оставшиеся секунды
+
+    return {
+        minutes: minutes,
+        seconds: seconds
+    };
 }
 function generateborders(k) {
     const protectedDiv = document.getElementById("protectedContent");
@@ -41,9 +56,6 @@ function generateborders(k) {
 
         contentdiv.appendChild(cell);
     }
-    //let buttonsDiv = document.createElement("div");
-    //buttonsDiv.innerHTML = `<button class="button" id="stop-round-button">Стоп</button>
-    //        <button class="button" id="start-round-button">Старт</button>`;
     let buttonDiv = document.createElement("div");
     buttonDiv.className = "button-container";
     buttonDiv.innerHTML = "<br>";
@@ -85,9 +97,14 @@ async function loadUsersToSelect(i, usersList) {
 
         const userSelect = document.getElementById(`userSelect${i}`);
         userSelect.innerHTML = ''; // Очищаем текущие опции
+        let cnt = 0;
         users.forEach(user => {
             const option = document.createElement('option');
             option.value = user.id;
+            if (cnt == i) {
+                option.selected = true;
+            }
+            cnt++;
             option.textContent = user.name; // Предполагается, что объект пользователя имеет поля id и name
             userSelect.appendChild(option);
         });
@@ -115,9 +132,14 @@ async function loadCategoriesToSelect(i, categoriesList) {
         
         const categorySelect = document.getElementById(`categorySelect${i}`);
         categorySelect.innerHTML = ''; // Очищаем текущие опции
+        let cnt = 1;
         categories.forEach(category => {
             const option = document.createElement('option');
             option.value = category;
+            if (cnt == i) {
+                option.selected = true;
+            }
+            cnt++;
             option.textContent = category; // Предполагается, что объект категории имеет поля id и name
             categorySelect.appendChild(option);
         });
@@ -139,10 +161,6 @@ async function submitSelection(i) {
     try {
         const response = await fetch(`/api/Admin/SetUserCategory?userId=${userId}&categoryName=${categoryName}`, {
             method: 'POST'//,
-            //headers: {
-            //    'Content-Type': 'application/json'
-            //},
-            //body: JSON.stringify({ userId, categoryName }) // Отправляем выбранные данные в формате JSON
         });
 
         if (!response.ok) throw new Error('Ошибка при сохранении категории');
@@ -160,6 +178,7 @@ async function startround() {
         });
 
         if (!response.ok) throw new Error('Ошибка при старте раунда');
+        starttimer();
         return response;
 
     } catch (error) {
@@ -172,10 +191,6 @@ async function stopround() {
 async function combinepage() {
     let userList = await loadUsers();
     let categoryList = await loadCategories();
-    console.log(`userList`);
-    console.log(userList);
-    console.log(`categoryList`);
-    console.log(categoryList);
     generateborders(playercount);
     for (let j = 1; j <= playercount; j++) {
         loadUsersToSelect(j, userList);
@@ -186,7 +201,6 @@ async function combinepage() {
 function handleuserstatus(data) {
     for (let j = 1; j <= playercount; j++) {
         const userId = document.getElementById(`userSelect${j}`).value;
-        console.log(userId);
         const status = data[userId]
         if (status) {
             let userimg = document.getElementById(`user-image${j}`);
@@ -202,7 +216,6 @@ function handleuserstatus(data) {
 
 
 document.addEventListener('DOMContentLoaded', combinepage());
-starttimer();
 var reconnectInterval = 1000;
 var ws;
 
@@ -224,14 +237,3 @@ var connect = function () {
     };
 };
 connect();
-//webSocket.onopen = (event) => {
-//    console.log("Connection opened");
-//};
-//webSocket.onmessage = function (event) {
-//    const mes = JSON.parse(event.data);
-//    console.log(mes);
-//};
-
-//webSocket.onclose = (event) => {
-//    console.log("Connection closed");
-//};

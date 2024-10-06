@@ -1,10 +1,8 @@
 ﻿using DODQuiz.Application.Abstract.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Sockets;
-using System.Text.Json;
 using System.Net.WebSockets;
-using DODQuiz.Core.Entyties;
+using System.Text.Json;
 
 namespace DODQuiz.API.Controllers
 {
@@ -14,10 +12,13 @@ namespace DODQuiz.API.Controllers
     public class GameController : ControllerBase
     {
         private static List<WebSocket> _sockets = new List<WebSocket>();
-        private static WebSocket _adminSocket {  get; set; }
-        private static Dictionary<WebSocket,Guid> _socketToUser = new Dictionary<WebSocket,Guid>();
+        private static WebSocket _adminSocket { get; set; }
+        private static Dictionary<WebSocket, Guid> _socketToUser = new Dictionary<WebSocket, Guid>();
         private static Dictionary<WebSocket, Guid> _socketToAdmin = new Dictionary<WebSocket, Guid>();
         private readonly IGameService _gameService;
+
+        private static int _timeRemaining; //seconds
+        private static Timer _timer;
         public GameController(IGameService gameService)
         {
             _gameService = gameService;
@@ -25,8 +26,18 @@ namespace DODQuiz.API.Controllers
 
         [Authorize(Policy = "admin")]
         [HttpPost("StartRound")]
-        public async Task<ActionResult> StartRound(CancellationToken cancellation)
+        public async Task<ActionResult> StartRound(int? remainingTime, CancellationToken cancellation)
         {
+            _timeRemaining = remainingTime ?? 300;
+            if (_timer == null)
+            {
+                _timer = new Timer(OnTimerElapsed, null, 0, 1000);
+            }
+            else
+            {
+                _timer.Dispose();
+                _timer = new Timer(OnTimerElapsed, null, 0, 1000);
+            }
             var result = await _gameService.StartRound(cancellation);
             if (result.IsError)
             {
@@ -34,6 +45,27 @@ namespace DODQuiz.API.Controllers
             }
             await SendQuestionsUpdate(cancellation);
             return Ok(result.Value);
+        }
+        private void OnTimerElapsed(object state)
+        {
+            if (_timeRemaining > 0)
+            {
+                _timeRemaining--;
+            }
+            else
+            {
+                _timer.Dispose();
+            }
+        }
+        [HttpGet("Timer")]
+        public IActionResult GetTimeRemaining()
+        {
+            // Верните оставшееся время
+            if (_timeRemaining > 0)
+            {
+                return Ok(_timeRemaining);
+            }
+            return Ok(0);
         }
 
         [Authorize(Policy = "admin")]
@@ -160,9 +192,9 @@ namespace DODQuiz.API.Controllers
                 var socket = _adminSocket;
                 if (socket.State == WebSocketState.Open)
                 {
-                        var message = JsonSerializer.Serialize(statuses);
-                        var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
-                        await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                    var message = JsonSerializer.Serialize(statuses);
+                    var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
+                    await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
         }
@@ -170,7 +202,7 @@ namespace DODQuiz.API.Controllers
         {
             var questionsWrap = await _gameService.GetUserToQuestion(cancellationToken);
             var questions = questionsWrap.Value;
-            
+
 
             foreach (var socket in _sockets)
             {
@@ -178,14 +210,14 @@ namespace DODQuiz.API.Controllers
                 {
                     var userId = _socketToUser[socket];
 
-                    var user = questions.Keys.Where(u=> u.Id == userId).FirstOrDefault();
+                    var user = questions.Keys.Where(u => u.Id == userId).FirstOrDefault();
                     string message;
                     try
                     {
                         message = JsonSerializer.Serialize(questions[user]);
                     }
-                    catch(Exception ex) 
-                    { 
+                    catch (Exception ex)
+                    {
                         Console.WriteLine(ex.ToString());
                         message = "";
                     }

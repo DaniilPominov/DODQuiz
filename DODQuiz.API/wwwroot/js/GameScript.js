@@ -1,7 +1,31 @@
 ﻿var ws;
 var reconnectInterval = 1000;
-let btn = document.getElementById("check-wss");
+var timerInterval = 1000;
 
+function starttimer() {
+    setInterval(async () => {
+        const response = await fetch('/api/Game/Timer');
+        if (response.ok) {
+            document.getElementById('timer').innerHTML = ":";
+            let timeRemaining = await response.json();
+            if (timeRemaining <= 0) {
+                openModal("Timer end");
+                clearInterval();
+            }
+            let time = convertSeconds(timeRemaining);
+            document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
+        }
+    }, timerInterval);
+}
+function convertSeconds(totalSeconds) {
+    const minutes = Math.floor(totalSeconds / 60); // Получаем полные минуты
+    const seconds = totalSeconds % 60; // Получаем оставшиеся секунды
+
+    return {
+        minutes: minutes,
+        seconds: seconds
+    };
+}
 async function changePlayerStatus() {
     let textbox = document.getElementById("root-code");
     let code = textbox.value;
@@ -12,6 +36,7 @@ async function changePlayerStatus() {
         if (!response.ok) {
             throw new Error('Ошибка при изменении статуса');
         }
+        openModal("You win!");
         return response;
     }
     catch (error) {
@@ -34,6 +59,8 @@ var connect = function () {
         questiontext.textContent = mes.Description;
         questionimg.src = mes.ImageUri;
         console.log(mes);
+        starttimer();
+        
     };
 
     ws.onclose = (event) => {
@@ -42,3 +69,19 @@ var connect = function () {
     };
 };
 connect();
+
+const modal = document.getElementById("myModal");
+
+function openModal(message) {
+    modal.style.display = "block";
+    const modalcontent = document.getElementById("modal-content");
+    modalcontent.innerHTML = `<span id="modal-close" class="close">&times;</span>
+    ${message}
+    `;
+    const span = document.getElementById("modal-close");
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+}
+
+// Функция для закрытия модального окна при нажатии на крестик
