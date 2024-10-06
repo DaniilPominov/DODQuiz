@@ -1,16 +1,16 @@
 ﻿var ws;
 var reconnectInterval = 1000;
 var timerInterval = 1000;
-
-function starttimer() {
-    setInterval(async () => {
+var timerId;
+function startTimer() {
+    timerId = setInterval(async () => {
         const response = await fetch('/api/Game/Timer');
         if (response.ok) {
-            document.getElementById('timer').innerHTML = ":";
             let timeRemaining = await response.json();
+            console.log(timeRemaining);
             if (timeRemaining <= 0) {
-                openModal("Timer end");
-                clearInterval();
+                clearInterval(timerId);
+                openModal("TimerEnd");
             }
             let time = convertSeconds(timeRemaining);
             document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
@@ -59,7 +59,7 @@ var connect = function () {
         questiontext.textContent = mes.Description;
         questionimg.src = mes.ImageUri;
         console.log(mes);
-        starttimer();
+        startTimer();
         
     };
 
@@ -83,5 +83,5 @@ function openModal(message) {
         modal.style.display = "none";
     }
 }
-
+startTimer();
 // Функция для закрытия модального окна при нажатии на крестик

@@ -16,6 +16,7 @@ namespace DODQuiz.API.Controllers
         private static Dictionary<WebSocket, Guid> _socketToUser = new Dictionary<WebSocket, Guid>();
         private static Dictionary<WebSocket, Guid> _socketToAdmin = new Dictionary<WebSocket, Guid>();
         private readonly IGameService _gameService;
+        private readonly IConfiguration _configuration;
 
         private static int _timeRemaining; //seconds
         private static Timer _timer;

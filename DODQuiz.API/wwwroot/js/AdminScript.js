@@ -1,13 +1,14 @@
 ﻿var playercount = 3;
 var timerInterval = 1000;
-function starttimer() {
-    setInterval(async () => {
+var timerId;
+function startTimer() {
+    timerId = setInterval(async () => {
         const response = await fetch('/api/Game/Timer');
         if (response.ok) {
-            document.getElementById('timer').innerHTML = ":";
             let timeRemaining = await response.json();
+            console.log(timeRemaining);
             if (timeRemaining <= 0) {
-                clearInterval();
+                clearInterval(timerId); // Остановить таймер
             }
             let time = convertSeconds(timeRemaining);
             document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
@@ -72,8 +73,14 @@ function generateborders(k) {
     buttonend.className = "button";
     buttonend.addEventListener("click", stopround);
 
-    buttonDiv.appendChild(buttonstart);
+    let timerbox = document.createElement("input");
+    timerbox.id = "round-length";
+
+    buttonDiv.appendChild(timerbox);
     buttonDiv.appendChild(buttonend);
+    buttonDiv.appendChild(buttonstart);
+    
+
     protectedDiv.appendChild(buttonDiv);
 }
 async function loadUsers() {
@@ -172,13 +179,21 @@ async function submitSelection(i) {
     }
 }
 async function startround() {
+    const secinput = document.getElementById("round-length");
+    let roundlen = 300;
+    if (secinput) {
+        if (Number.isInteger(Number(secinput.value))){
+            roundlen = Number(secinput.value);
+        }
+    }
+    console.log(roundlen);
     try {
-        const response = await fetch(`/api/Game/StartRound`, {
-            method: 'POST'
-        });
+        const response = await fetch(`/api/Game/StartRound?remainingTime=${roundlen}`, {
+                method: 'POST'
+            });
 
         if (!response.ok) throw new Error('Ошибка при старте раунда');
-        starttimer();
+        startTimer();
         return response;
 
     } catch (error) {
@@ -237,3 +252,4 @@ var connect = function () {
     };
 };
 connect();
+startTimer();
