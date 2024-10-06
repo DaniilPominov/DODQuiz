@@ -1,14 +1,14 @@
 ﻿var ws;
 var reconnectInterval = 1000;
 var timerInterval = 1000;
-var timerId;
+let timerId;
 function startTimer() {
     timerId = setInterval(async () => {
         const response = await fetch('/api/Game/Timer');
         if (response.ok) {
             let timeRemaining = await response.json();
-            console.log(timeRemaining);
             if (timeRemaining <= 0) {
+                console.log("On timer ending");
                 clearInterval(timerId);
                 openModal("TimerEnd");
             }
@@ -49,17 +49,20 @@ var connect = function () {
     ws = new WebSocket('ws://192.168.31.225:5072/ws');
     ws.onopen = (event) => {
         console.log("Connection opened");
+        startTimer();
     };
     ws.onmessage = function (event) {
         const mes = JSON.parse(event.data);
         let questioname = document.getElementById("question-name");
         let questiontext = document.getElementById("question-text");
         let questionimg = document.getElementById("question-image");
+        const modal = document.getElementById("myModal");
         questioname.textContent = mes.Name;
         questiontext.textContent = mes.Description;
         questionimg.src = mes.ImageUri;
         console.log(mes);
         startTimer();
+        modal.style.display = "none";
         
     };
 
@@ -83,5 +86,4 @@ function openModal(message) {
         modal.style.display = "none";
     }
 }
-startTimer();
 // Функция для закрытия модального окна при нажатии на крестик

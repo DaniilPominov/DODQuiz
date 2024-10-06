@@ -1,13 +1,13 @@
 ﻿var playercount = 3;
 var timerInterval = 1000;
-var timerId;
+let timerId;
 function startTimer() {
     timerId = setInterval(async () => {
         const response = await fetch('/api/Game/Timer');
         if (response.ok) {
             let timeRemaining = await response.json();
-            console.log(timeRemaining);
             if (timeRemaining <= 0) {
+                console.log("Timer NOT STOP!!!!");
                 clearInterval(timerId); // Остановить таймер
             }
             let time = convertSeconds(timeRemaining);
@@ -75,7 +75,7 @@ function generateborders(k) {
 
     let timerbox = document.createElement("input");
     timerbox.id = "round-length";
-
+    timerbox.placeholder = "Длина раунда (секунд)";
     buttonDiv.appendChild(timerbox);
     buttonDiv.appendChild(buttonend);
     buttonDiv.appendChild(buttonstart);
@@ -244,6 +244,7 @@ var connect = function () {
     };
     ws.onmessage = function (event) {
         const mes = JSON.parse(event.data);
+        //startTimer();
         handleuserstatus(mes);
     };
     ws.onclose = (event) => {
@@ -252,4 +253,3 @@ var connect = function () {
     };
 };
 connect();
-startTimer();

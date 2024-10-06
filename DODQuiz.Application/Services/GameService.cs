@@ -27,9 +27,16 @@ namespace DODQuiz.Application.Services
         {
             _userRepository = userRepository;
             _questionRepository = questionRepository;
-            _questions = _questionRepository.GetAllAsync(CancellationToken.None).Result.Value;
+            if (_questions.Count == 0)
+            {
+                _questions = _questionRepository.GetAllAsync(CancellationToken.None).Result.Value;
+            }
+            if (_rootCode == "")
+            {
+                _rootCode = _configuration?.GetRequiredSection("QuizOptions:RootCode").Value ?? "bober123";
+            }
             _configuration = configuration;
-            _rootCode = _configuration?.GetRequiredSection("QuizOptions:RootCode").Value ?? "bober123";
+            
         }
         public async Task<ErrorOr<ConcurrentDictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken)
         {
@@ -152,7 +159,13 @@ namespace DODQuiz.Application.Services
 
         public async Task<ErrorOr<Success>> StartRound(CancellationToken cancellationToken)
         {
-
+            foreach (var user in _userStatuses.Keys)
+            {
+                if (_userStatuses[user])
+                {
+                    _userStatuses[user] = false;
+                }
+            }
             return await GenerateQuesitons(cancellationToken);
         }
         private async Task<ErrorOr<Success>> GenerateQuesitons(CancellationToken cancellationToken)

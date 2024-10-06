@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
 using System.Text.Json;
+using System.Threading;
 
 namespace DODQuiz.API.Controllers
 {
@@ -45,6 +46,7 @@ namespace DODQuiz.API.Controllers
                 return BadRequest();
             }
             await SendQuestionsUpdate(cancellation);
+            await SendUserStatuses(cancellation);
             return Ok(result.Value);
         }
         private void OnTimerElapsed(object state)
@@ -219,7 +221,7 @@ namespace DODQuiz.API.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.ToString());
+                        Console.WriteLine("Players List was null"+ex.ToString());
                         message = "";
                     }
                     var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
