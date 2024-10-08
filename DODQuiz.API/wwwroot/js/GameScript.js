@@ -1,21 +1,30 @@
 ﻿var ws;
 var reconnectInterval = 1000;
-var timerInterval = 1000;
-let timerId;
-function startTimer() {
-    timerId = setInterval(async () => {
-        const response = await fetch('/api/Game/Timer');
-        if (response.ok) {
-            let timeRemaining = await response.json();
-            if (timeRemaining <= 0) {
-                console.log("On timer ending");
-                clearInterval(timerId);
-                openModal("TimerEnd");
-            }
-            let time = convertSeconds(timeRemaining);
-            document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
-        }
-    }, timerInterval);
+var serverIp;
+var port = 5072;
+getIp();
+
+async function getIp() {
+    try {
+        const response = await fetch('/api/Game/GetIp');
+        if (!response.ok) throw new Error('Ошибка при загрузке пользователей');
+        let ipPrepare = response.url.split(":")[1];
+        console.log(ipPrepare.replace("//", ""));
+        serverIp = ipPrepare.replace("//", "");
+    }
+    catch (error) {
+        console.error(error);
+    }
+};
+function timerHandler(timeRemaining) {
+    let time = convertSeconds(timeRemaining);
+    if (Number.parseInt(timeRemaining) > 0) {
+        
+    }
+    else {
+        openModal("timer end");
+    }
+    document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
 }
 function convertSeconds(totalSeconds) {
     const minutes = Math.floor(totalSeconds / 60); // Получаем полные минуты
@@ -46,24 +55,28 @@ async function changePlayerStatus() {
 const sendbtn = document.getElementById("root-code-buttond");
 sendbtn.addEventListener("click", changePlayerStatus);
 var connect = function () {
-    ws = new WebSocket('ws://192.168.31.225:5072/ws');
+    ws = new WebSocket(`ws://${serverIp}:${port}/ws`);
     ws.onopen = (event) => {
         console.log("Connection opened");
-        startTimer();
     };
     ws.onmessage = function (event) {
         const mes = JSON.parse(event.data);
         let questioname = document.getElementById("question-name");
         let questiontext = document.getElementById("question-text");
         let questionimg = document.getElementById("question-image");
-        const modal = document.getElementById("myModal");
-        questioname.textContent = mes.Name;
-        questiontext.textContent = mes.Description;
-        questionimg.src = mes.ImageUri;
-        console.log(mes);
-        startTimer();
-        modal.style.display = "none";
-        
+        let questionData = mes["question"];
+        let timerData = mes["timer"];
+        if (!(questionData == undefined)) {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            let questionJson = JSON.parse(questionData);
+            questioname.textContent = questionJson['Name'];
+            questiontext.textContent = questionJson['Description'];
+            questionimg.src = questionJson['ImageUri'];
+        }    
+        if (!(timerData == undefined)) {
+            timerHandler(Number.parseInt(timerData));
+        }
     };
 
     ws.onclose = (event) => {

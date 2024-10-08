@@ -1,4 +1,5 @@
-﻿using DODQuiz.Application.Abstract.Services;
+﻿using CSharpFunctionalExtensions;
+using DODQuiz.Application.Abstract.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
@@ -49,11 +50,12 @@ namespace DODQuiz.API.Controllers
             await SendUserStatuses(cancellation);
             return Ok(result.Value);
         }
-        private void OnTimerElapsed(object state)
+        private async void OnTimerElapsed(object state)
         {
             if (_timeRemaining > 0)
             {
                 _timeRemaining--;
+                await SendRemainingTime(CancellationToken.None);
             }
             else
             {
@@ -88,6 +90,11 @@ namespace DODQuiz.API.Controllers
                 return BadRequest();
             }
             return Ok(result.Value);
+        }
+        [HttpGet("GetIp")]
+        public async Task<ActionResult> GetIp(CancellationToken cancellationToken)
+        {
+            return Ok();
         }
         [HttpPut("ChangeUserStatus")]
         public async Task<ActionResult> ChangeUserStatus(string code, CancellationToken cancellationToken)
@@ -195,11 +202,31 @@ namespace DODQuiz.API.Controllers
                 var socket = _adminSocket;
                 if (socket.State == WebSocketState.Open)
                 {
-                    var message = JsonSerializer.Serialize(statuses);
+                    var messagePrepare = new Dictionary<string, string>();
+                    messagePrepare["timer"] = _timeRemaining.ToString();
+                    var statusesmessage = JsonSerializer.Serialize(statuses);
+                    messagePrepare["statuses"] = statusesmessage;
+                    var message = JsonSerializer.Serialize(messagePrepare);
                     var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
                     await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
+        }
+        private async Task SendRemainingTime(CancellationToken cancellationToken)
+        {
+            var messagePrepare = new Dictionary<string, string>();
+            messagePrepare["timer"] = _timeRemaining.ToString();
+            var message = JsonSerializer.Serialize(messagePrepare);
+            var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
+            foreach (var socket in _sockets)
+            {
+                if (socket!=null && socket.State == WebSocketState.Open)
+                {
+                    await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
+            }
+            if (_adminSocket!=null && _adminSocket.State==WebSocketState.Open)
+            await _adminSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
         private async Task SendQuestionsUpdate(CancellationToken cancellationToken)
         {
@@ -214,10 +241,14 @@ namespace DODQuiz.API.Controllers
                     var userId = _socketToUser[socket];
 
                     var user = questions.Keys.Where(u => u.Id == userId).FirstOrDefault();
+                    var messagePrepare = new Dictionary<string, string>();
                     string message;
                     try
                     {
-                        message = JsonSerializer.Serialize(questions[user]);
+                        var userQuestion = JsonSerializer.Serialize(questions[user]);
+                        messagePrepare["question"] = userQuestion;
+                        message = JsonSerializer.Serialize(messagePrepare);
+                        
                     }
                     catch (Exception ex)
                     {

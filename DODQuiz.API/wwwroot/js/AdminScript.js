@@ -1,19 +1,24 @@
 ﻿var playercount = 3;
-var timerInterval = 1000;
-let timerId;
-function startTimer() {
-    timerId = setInterval(async () => {
-        const response = await fetch('/api/Game/Timer');
-        if (response.ok) {
-            let timeRemaining = await response.json();
-            if (timeRemaining <= 0) {
-                console.log("Timer NOT STOP!!!!");
-                clearInterval(timerId); // Остановить таймер
-            }
-            let time = convertSeconds(timeRemaining);
-            document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
-        }
-    }, timerInterval);
+var serverIp;
+var port = 5072;
+getIp();
+
+async function getIp() {
+    try {
+        const response = await fetch('/api/Game/GetIp');
+        if (!response.ok) throw new Error('Ошибка при загрузке пользователей');
+        let ipPrepare = response.url.split(":")[1];
+        console.log(ipPrepare.replace("//", ""));
+        serverIp = ipPrepare.replace("//", "");
+    }
+    catch (error) {
+        console.error(error);
+    }
+};
+
+function timerHandler(timeRemaining) {
+    let time = convertSeconds(timeRemaining);
+    document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
 }
 function convertSeconds(totalSeconds) {
     const minutes = Math.floor(totalSeconds / 60); // Получаем полные минуты
@@ -88,6 +93,7 @@ async function loadUsers() {
         const response = await fetch('/api/Admin/GetUsers');
         if (!response.ok) throw new Error('Ошибка при загрузке пользователей');
         const users = await response.json();
+      
         console.log("onload");
         console.log(users);
         return users;
@@ -193,7 +199,7 @@ async function startround() {
             });
 
         if (!response.ok) throw new Error('Ошибка при старте раунда');
-        startTimer();
+        //startTimer();
         return response;
 
     } catch (error) {
@@ -213,7 +219,8 @@ async function combinepage() {
     }
 }
 
-function handleuserstatus(data) {
+function handleuserstatus(statuses) {
+    let data = JSON.parse(statuses);
     for (let j = 1; j <= playercount; j++) {
         const userId = document.getElementById(`userSelect${j}`).value;
         const status = data[userId]
@@ -234,8 +241,11 @@ document.addEventListener('DOMContentLoaded', combinepage());
 var reconnectInterval = 1000;
 var ws;
 
-var connect = function () {
-    ws = new WebSocket('ws://192.168.31.225:5072/wsadmin');
+var connect = async function () {
+    if (!serverIp) {
+        await getIp();
+    }
+    ws = new WebSocket(`ws://${serverIp}:${port}/wsadmin`);
     ws.onopen = (event) => {
         console.log("Connection opened");
     };
@@ -244,8 +254,10 @@ var connect = function () {
     };
     ws.onmessage = function (event) {
         const mes = JSON.parse(event.data);
-        //startTimer();
-        handleuserstatus(mes);
+        let timeRemaining = mes["timer"];
+        let status = mes["statuses"];
+        timerHandler(timeRemaining);
+        handleuserstatus(status);
     };
     ws.onclose = (event) => {
         console.log("Connection closed");
