@@ -61,6 +61,7 @@ var connect = function () {
     };
     ws.onmessage = function (event) {
         const mes = JSON.parse(event.data);
+        console.log(mes);
         let questioname = document.getElementById("question-name");
         let questiontext = document.getElementById("question-text");
         let questionimg = document.getElementById("question-image");

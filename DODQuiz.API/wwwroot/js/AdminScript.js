@@ -133,6 +133,7 @@ async function loadCategories() {
         const response = await fetch('/api/Game/GetCategories');
         if (!response.ok) throw new Error('Ошибка при загрузке категорий');
         const categories = await response.json();
+        console.log(categories);
         return categories;
     } catch (error) {
         console.error(error);

@@ -38,6 +38,11 @@ namespace DODQuiz.Application.Services
             _configuration = configuration;
             
         }
+        //public async Task OnQuestionUpdate(CancellationToken cancellationToken)
+        //{
+        //    var qusetionWrap = await _questionRepository.GetAllAsync(cancellationToken);
+        //    _questions = qusetionWrap.Value;
+        //}
         public async Task<ErrorOr<ConcurrentDictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken)
         {
             return _userToQuestion;
@@ -186,9 +191,12 @@ namespace DODQuiz.Application.Services
                 {
                     _recentQuestions[categoryname] = new List<Guid>() { newquestion.Id };
                 }
-                while (_recentQuestions[categoryname].Contains(newquestion.Id))
+                if (category.Count > _recentDepth)
                 {
-                    newquestion = category[random.Next(category.Count)];
+                    while (_recentQuestions[categoryname].Contains(newquestion.Id))
+                    {
+                        newquestion = category[random.Next(category.Count)];
+                    }
                 }
                 if (_recentQuestions[categoryname].Count >= _recentDepth)
                 {
