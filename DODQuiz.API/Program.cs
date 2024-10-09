@@ -23,7 +23,8 @@ namespace DODQuiz.API
             builder.Services.AddApiAuth(builder.Configuration);
             var app = builder.Build();
 
-            string LocalIp = LocalIPAddress();
+            //string LocalIp = LocalIPAddress();
+            string LocalIp = "*";
             app.Urls.Add("http://" + LocalIp + ":5072");
             //app.Urls.Add("https://" + LocalIp + ":5071");
             // Configure the HTTP request pipeline.
