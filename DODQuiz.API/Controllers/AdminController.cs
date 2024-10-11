@@ -80,6 +80,7 @@ namespace DODQuiz.API.Controllers
             {
                 return BadRequest(result);
             }
+            await gameService.UpdateQuestions(cancellationToken);
             return Ok(result);
         }
         [HttpPut("EditQuestion")]

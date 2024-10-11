@@ -29,7 +29,7 @@ namespace DODQuiz.Application.Services
             _questionRepository = questionRepository;
             if (_questions.Count == 0)
             {
-                _questions = _questionRepository.GetAllAsync(CancellationToken.None).Result.Value;
+                UpdateQuestions(CancellationToken.None);
             }
             if (_rootCode == "")
             {
@@ -37,6 +37,16 @@ namespace DODQuiz.Application.Services
             }
             _configuration = configuration;
             
+        }
+        public async Task<ErrorOr<Success>> UpdateQuestions(CancellationToken cancellationToken)
+        {
+            var questionWrap = await _questionRepository.GetAllAsync(cancellationToken);
+            if (questionWrap.IsError)
+            {
+                return Error.Failure();
+            }
+            _questions = questionWrap.Value;
+            return Result.Success;
         }
         //public async Task OnQuestionUpdate(CancellationToken cancellationToken)
         //{
@@ -149,6 +159,7 @@ namespace DODQuiz.Application.Services
             {
                 return Error.Failure();
             }
+            await UpdateQuestions(cancellationToken);
             return result;
         }
 

@@ -22,6 +22,7 @@ namespace DODQuiz.Application.Abstract.Services
         Task<ErrorOr<ConcurrentDictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ChangeUserStatus(Guid id, string code, CancellationToken cancellationToken);
         Task<ErrorOr<ConcurrentDictionary<Guid, bool>>> GetUsersStatuses(CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> UpdateQuestions(CancellationToken cancellationToken);
 
     }
 }
