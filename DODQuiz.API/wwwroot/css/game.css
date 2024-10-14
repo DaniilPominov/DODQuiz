@@ -15,7 +15,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-image: url('https://via.placeholder.com/1920x1080/cccccc/000000?text=Background+Image');
+    background-image: url("/images/game-background.jpg");
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -30,20 +30,21 @@ body {
 }
 
 .container {
-    background-image: url('https://via.placeholder.com/800/ffffff/000000?text=Container+Background');
+    background-image: url('/images/pergament.png');
     width: 50vw;
     height: 70vh;
-    background-size: cover;
-    border: 2px solid #333;
-    border-radius: 10px;
+    background-size: 100% 90%;
+    background-repeat: no-repeat;
+    /*border: 2px solid #333;
+    border-radius: 10px;*/
     padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
 }
 
 .image {
     max-width: 300px;
-    max-height:300px;
+    max-height:50%;
     height: auto;
 }
 

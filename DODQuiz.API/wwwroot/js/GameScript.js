@@ -4,9 +4,9 @@ var serverIp;
 var port = 5072;
 getIp();
 
-async function getIp() {
+function getIp() {
     try {
-        const response = await fetch('/api/Game/GetIp');
+        const response = fetch('/api/Game/GetIp');
         if (!response.ok) throw new Error('Ошибка при загрузке пользователей');
         let ipPrepare = response.url.split(":")[1];
         console.log(ipPrepare.replace("//", ""));
