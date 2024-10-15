@@ -3,10 +3,13 @@ var reconnectInterval = 1000;
 var serverIp;
 var port = 5072;
 getIp();
+var MatJax = document.createElement('script');
+MatJax.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML');
+document.head.appendChild(MatJax);
 
-function getIp() {
+async function getIp() {
     try {
-        const response = fetch('/api/Game/GetIp');
+        const response = await fetch('/api/Game/GetIp');
         if (!response.ok) throw new Error('Ошибка при загрузке пользователей');
         let ipPrepare = response.url.split(":")[1];
         console.log(ipPrepare.replace("//", ""));
@@ -67,6 +70,7 @@ var connect = function () {
         let questionimg = document.getElementById("question-image");
         let questionData = mes["question"];
         let timerData = mes["timer"];
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         if (!(questionData == undefined)) {
             const modal = document.getElementById("myModal");
             modal.style.display = "none";

@@ -221,19 +221,22 @@ async function combinepage() {
 }
 
 function handleuserstatus(statuses) {
+    if (statuses) {
     let data = JSON.parse(statuses);
-    for (let j = 1; j <= playercount; j++) {
-        const userId = document.getElementById(`userSelect${j}`).value;
-        const status = data[userId]
-        if (status) {
-            let userimg = document.getElementById(`user-image${j}`);
-            userimg.src = "images/key.png";
+    
+        for (let j = 1; j <= playercount; j++) {
+            const userId = document.getElementById(`userSelect${j}`).value;
+            const status = data[userId]
+            if (status) {
+                let userimg = document.getElementById(`user-image${j}`);
+                userimg.src = "images/key.png";
+            }
+            else {
+                let userimg = document.getElementById(`user-image${j}`);
+                userimg.src = "https://via.placeholder.com/200";
+            }
+
         }
-        else {
-            let userimg = document.getElementById(`user-image${j}`);
-            userimg.src = "https://via.placeholder.com/200";
-        }
-        
     }
 }
 

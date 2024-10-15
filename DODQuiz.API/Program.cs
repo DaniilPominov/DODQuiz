@@ -24,8 +24,9 @@ namespace DODQuiz.API
             var app = builder.Build();
 
             //string LocalIp = LocalIPAddress();
-            string LocalIp = "*";
-            app.Urls.Add("http://" + LocalIp + ":5072");
+            string LocalIp = LocalIPAddress();
+            //app.Urls.Add("http://" + LocalIp + ":5072");
+            app.Urls.Add("http://" + "*" + ":5072");
             //app.Urls.Add("https://" + LocalIp + ":5071");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
