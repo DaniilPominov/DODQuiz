@@ -16,11 +16,11 @@ async function getIp() {
     }
 };
 
-function timerHandler(timeRemaining) {
-    let time = convertSeconds(timeRemaining);
+async function timerHandler(timeRemaining) {
+    let time = await convertSeconds(timeRemaining);
     document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
 }
-function convertSeconds(totalSeconds) {
+async function convertSeconds(totalSeconds) {
     const minutes = Math.floor(totalSeconds / 60); // Получаем полные минуты
     const seconds = totalSeconds % 60; // Получаем оставшиеся секунды
 
@@ -40,7 +40,7 @@ function generateborders(k) {
         cell.id = `user-container${i}`;
         cell.className = `image-container${i}`;
         cell.innerHTML = `<div class="image-frame">
-        <img id="user-image${i}" src="https://via.placeholder.com/200" alt="Изображение ${i}">
+        <img id="user-image${i}" src="/images/200.png" alt="Изображение ${i}">
             <div id="category-container${i}">
                 <label for="userSelect${i}">Выберите пользователя:</label>
                 <select id="userSelect${i}">
@@ -220,7 +220,7 @@ async function combinepage() {
     }
 }
 
-function handleuserstatus(statuses) {
+async function handleuserstatus(statuses) {
     if (statuses) {
     let data = JSON.parse(statuses);
     
@@ -236,6 +236,15 @@ function handleuserstatus(statuses) {
                 userimg.src = "https://via.placeholder.com/200";
             }
 
+        }
+    }
+}
+async function handleMusic(mus) {
+    if (mus) {
+        let data = JSON.parse(mus);
+        if (data == true) {
+            let music = document.getElementById("winner-music");
+            music.play();
         }
     }
 }
@@ -256,12 +265,14 @@ var connect = async function () {
     ws.onerror = (event) => {
         console.log("Connection error");
     };
-    ws.onmessage = function (event) {
+    ws.onmessage = async function (event) {
         const mes = JSON.parse(event.data);
         let timeRemaining = mes["timer"];
         let status = mes["statuses"];
-        timerHandler(timeRemaining);
-        handleuserstatus(status);
+        let music = mes["all-win"];
+        await timerHandler(timeRemaining);
+        await handleuserstatus(status);
+        await handleMusic(music);
     };
     ws.onclose = (event) => {
         console.log("Connection closed");

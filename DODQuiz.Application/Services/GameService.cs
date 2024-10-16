@@ -175,6 +175,13 @@ namespace DODQuiz.Application.Services
 
         public async Task<ErrorOr<Success>> StartRound(CancellationToken cancellationToken)
         {
+            if (_userStatuses.Count == 0)
+            {
+                foreach (var user in _users)
+                {
+                    _userStatuses.TryAdd(user.Id, false);
+                }
+            }
             foreach (var user in _userStatuses.Keys)
             {
                 if (_userStatuses[user])

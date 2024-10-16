@@ -1,7 +1,7 @@
 ﻿body {
     margin: 0;
     height: 100vh;
-    background-image: url('https://via.placeholder.com/1920x1080'); /* Фоновое изображение */
+    background-image: url('/images/admin-1080p.png'); /* Фоновое изображение */
     background-size: cover;
     display: flex;
     flex-direction: column;

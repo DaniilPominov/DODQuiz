@@ -1,7 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using DODQuiz.Application.Abstract.Services;
+using DODQuiz.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text.Json;
 using System.Threading;
@@ -202,10 +205,24 @@ namespace DODQuiz.API.Controllers
                 var socket = _adminSocket;
                 if (socket.State == WebSocketState.Open)
                 {
-                    var messagePrepare = new Dictionary<string, string>();
-                    messagePrepare["timer"] = _timeRemaining.ToString();
+                    var messagePrepare = new ConcurrentDictionary<string, string>();
+                    messagePrepare.TryAdd("timer",_timeRemaining.ToString());
                     var statusesmessage = JsonSerializer.Serialize(statuses);
-                    messagePrepare["statuses"] = statusesmessage;
+                    messagePrepare.TryAdd("statuses",statusesmessage);
+
+                    if (statuses.Count > 0)
+                    {
+                        messagePrepare.TryAdd("all-win", "true");
+                        foreach (var stat in statuses)
+                        {
+                            if (!stat.Value)
+                            {
+                                messagePrepare.TryUpdate("all-win", "false","true");
+                                break;
+                            }
+                        }
+                    }
+
                     var message = JsonSerializer.Serialize(messagePrepare);
                     var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
                     await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
