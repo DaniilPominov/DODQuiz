@@ -1,5 +1,6 @@
-﻿//const apiUrl = '/api'; // Базовый URL для API
-
+﻿var MatJax = document.createElement('script');
+MatJax.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML');
+document.head.appendChild(MatJax);
 // Функция для получения всех объектов и отображения их в таблице
 async function fetchObjects() {
     const response = await fetch(`api/Admin/GetAllQuestions`);

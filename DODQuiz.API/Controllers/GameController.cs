@@ -1,13 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using DODQuiz.Application.Abstract.Services;
-using DODQuiz.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text.Json;
-using System.Threading;
 
 namespace DODQuiz.API.Controllers
 {
@@ -206,9 +203,9 @@ namespace DODQuiz.API.Controllers
                 if (socket.State == WebSocketState.Open)
                 {
                     var messagePrepare = new ConcurrentDictionary<string, string>();
-                    messagePrepare.TryAdd("timer",_timeRemaining.ToString());
+                    messagePrepare.TryAdd("timer", _timeRemaining.ToString());
                     var statusesmessage = JsonSerializer.Serialize(statuses);
-                    messagePrepare.TryAdd("statuses",statusesmessage);
+                    messagePrepare.TryAdd("statuses", statusesmessage);
 
                     if (statuses.Count > 0)
                     {
@@ -217,7 +214,7 @@ namespace DODQuiz.API.Controllers
                         {
                             if (!stat.Value)
                             {
-                                messagePrepare.TryUpdate("all-win", "false","true");
+                                messagePrepare.TryUpdate("all-win", "false", "true");
                                 break;
                             }
                         }
@@ -237,13 +234,13 @@ namespace DODQuiz.API.Controllers
             var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));
             foreach (var socket in _sockets)
             {
-                if (socket!=null && socket.State == WebSocketState.Open)
+                if (socket != null && socket.State == WebSocketState.Open)
                 {
                     await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
-            if (_adminSocket!=null && _adminSocket.State==WebSocketState.Open)
-            await _adminSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+            if (_adminSocket != null && _adminSocket.State == WebSocketState.Open)
+                await _adminSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
         private async Task SendQuestionsUpdate(CancellationToken cancellationToken)
         {
@@ -265,11 +262,11 @@ namespace DODQuiz.API.Controllers
                         var userQuestion = JsonSerializer.Serialize(questions[user]);
                         messagePrepare["question"] = userQuestion;
                         message = JsonSerializer.Serialize(messagePrepare);
-                        
+
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Players List was null"+ex.ToString());
+                        Console.WriteLine("Players List was null" + ex.ToString());
                         message = "";
                     }
                     var buffer = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(message));

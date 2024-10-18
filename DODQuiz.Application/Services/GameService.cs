@@ -36,7 +36,7 @@ namespace DODQuiz.Application.Services
                 _rootCode = _configuration?.GetRequiredSection("QuizOptions:RootCode").Value ?? "bober123";
             }
             _configuration = configuration;
-            
+
         }
         public async Task<ErrorOr<Success>> UpdateQuestions(CancellationToken cancellationToken)
         {
