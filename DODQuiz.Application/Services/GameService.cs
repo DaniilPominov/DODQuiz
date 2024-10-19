@@ -20,7 +20,7 @@ namespace DODQuiz.Application.Services
         private static ConcurrentDictionary<User, string> _userToCategory = new();
         private static ConcurrentDictionary<string, List<Guid>> _recentQuestions = new();
         private static ConcurrentDictionary<Guid, bool> _userStatuses = new();
-        private const int _recentDepth = 2;//5 in release
+        private const int _recentDepth = 5;
         private string _rootCode = "";
 
         public GameService(IUserRepos userRepository, IQuestionRepos questionRepository, IConfiguration configuration)
@@ -48,11 +48,6 @@ namespace DODQuiz.Application.Services
             _questions = questionWrap.Value;
             return Result.Success;
         }
-        //public async Task OnQuestionUpdate(CancellationToken cancellationToken)
-        //{
-        //    var qusetionWrap = await _questionRepository.GetAllAsync(cancellationToken);
-        //    _questions = qusetionWrap.Value;
-        //}
         public async Task<ErrorOr<ConcurrentDictionary<User, Question>>> GetUserToQuestion(CancellationToken cancellationToken)
         {
             return _userToQuestion;

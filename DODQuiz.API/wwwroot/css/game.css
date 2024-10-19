@@ -97,17 +97,20 @@ content{
     height: 100%; /* Полная высота */
     overflow: auto; /* Включает прокрутку, если необходимо */
     background-color: rgb(0,0,0); /* Черный фон */
-    background-color: rgba(0,0,0,0.4); /* Черный фон с прозрачностью */
+    background-color: rgba(0,0,0,0.2); /* Черный фон с прозрачностью */
 }
 
 /* Стиль для самого модального окна */
 .modal-content {
-    background-color: #fefefe;
+    background-color: #ffffff6f;
     margin: 15% auto; /* Центрирование окна */
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Ширина окна */
-    position: relative; /* Для позиционирования крестика */
+    width: 15%; /* Ширина окна */
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px; /* Для позиционирования крестика */
 }
 
 /* Стиль для кнопки закрытия */
@@ -116,6 +119,7 @@ content{
     float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
 }
 
     .close:hover,
@@ -124,3 +128,14 @@ content{
         text-decoration: none;
         cursor: pointer;
     }
+.modal-image {
+    width: 100%;
+    max-width:200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+.modal-text {
+    text-align: center;
+    margin-top: 10px;
+}

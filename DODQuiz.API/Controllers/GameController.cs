@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using DODQuiz.Application.Abstract.Services;
+using DODQuiz.Core.Entyties;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
@@ -297,6 +298,21 @@ namespace DODQuiz.API.Controllers
                 receiveResult.CloseStatus.Value,
                 receiveResult.CloseStatusDescription,
                 CancellationToken.None);
+        }
+
+        [HttpGet("MyQuestion")]
+        public async Task<ActionResult> GetMyQuestion(CancellationToken cancellationToken)
+        {
+            var questions = _gameService.GetUserToQuestion(cancellationToken);
+            var userId = HttpContext.User.Claims.ToList().Where(c=> c.Type== "UserId").FirstOrDefault();
+            var users = await _gameService.GetAllUsers(cancellationToken);
+            var user =  users.Value.ToList().Where(u => u.Id == Guid.Parse(userId.Value)).FirstOrDefault();
+            await questions;
+            var result = questions.Result.Value.TryGetValue(user, out var answer);
+            if (answer != null) {
+                return Ok(JsonSerializer.Serialize(answer));
+            }
+            return BadRequest($"User {userId} not found in users collection {result}");
         }
     }
 }

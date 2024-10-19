@@ -49,6 +49,7 @@ async function changePlayerStatus() {
             throw new Error('Ошибка при изменении статуса');
         }
         openModal("You win!");
+        textbox.value = "";
         return response;
     }
     catch (error) {
@@ -57,27 +58,24 @@ async function changePlayerStatus() {
 };
 const sendbtn = document.getElementById("root-code-buttond");
 sendbtn.addEventListener("click", changePlayerStatus);
-var connect = function () {
+var connect = async function () {
     ws = new WebSocket(`ws://${serverIp}:${port}/ws`);
-    ws.onopen = (event) => {
+    ws.onopen = async (event) => {
         console.log("Connection opened");
+        const response = await fetch("api/Game/MyQuestion");
+        if (response) {
+            let questionData = await response.json();
+            await fillQuestion(JSON.stringify(questionData));
+
+        }
+
     };
-    ws.onmessage = function (event) {
+    ws.onmessage = async function (event) {
         const mes = JSON.parse(event.data);
-        console.log(mes);
-        let questioname = document.getElementById("question-name");
-        let questiontext = document.getElementById("question-text");
-        let questionimg = document.getElementById("question-image");
         let questionData = mes["question"];
         let timerData = mes["timer"];
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         if (!(questionData == undefined)) {
-            const modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            let questionJson = JSON.parse(questionData);
-            questioname.textContent = questionJson['Name'];
-            questiontext.textContent = questionJson['Description'];
-            questionimg.src = questionJson['ImageUri'];
+            await fillQuestion(questionData);
         }    
         if (!(timerData == undefined)) {
             timerHandler(Number.parseInt(timerData));
@@ -90,16 +88,36 @@ var connect = function () {
     };
 };
 connect();
-
+async function fillQuestion(questionData) {
+    let questioname = document.getElementById("question-name");
+    let questiontext = document.getElementById("question-text");
+    let questionimg = document.getElementById("question-image");
+    const modal = document.getElementById("myModal");
+    modal.style.display = "none";
+    let questionJson = JSON.parse(questionData);
+    questioname.textContent = questionJson['Name'];
+    questiontext.textContent = questionJson['Description'];
+    questionimg.src = questionJson['ImageUri'];
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+}
 const modal = document.getElementById("myModal");
 
 function openModal(message) {
+    let path = "/images/key.png";
+    if (message == "timer end") {
+        path = "/images/close.png";
+        message = "К сожалению время вышло и вы не успели получить ключ"
+    }
+    else {
+        message = "Ключ получен!"
+    }
     modal.style.display = "block";
     const modalcontent = document.getElementById("modal-content");
-    modalcontent.innerHTML = `<span id="modal-close" class="close">&times;</span>
-    ${message}
-    `;
+    modalcontent.innerHTML = `<span id="modal-close" class="modal">dfghjkhg</span>
+      <img src="${path}" alt="Картина" class="modal-image">
+      <p class="modal-text">${message}</p>`;
     const span = document.getElementById("modal-close");
+    span.style.display = 'block';
     span.onclick = function () {
         modal.style.display = "none";
     }
