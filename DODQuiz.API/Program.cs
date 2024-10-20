@@ -29,7 +29,7 @@ namespace DODQuiz.API
             app.Urls.Add("http://" + "localhost" + ":5072");
             //app.Urls.Add("http://" + "*" + ":5072");
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

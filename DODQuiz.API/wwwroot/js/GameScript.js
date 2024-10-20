@@ -103,23 +103,25 @@ async function fillQuestion(questionData) {
 const modal = document.getElementById("myModal");
 
 function openModal(message) {
-    let path = "/images/key.png";
-    if (message == "timer end") {
-        path = "/images/close.png";
-        message = "К сожалению время вышло и вы не успели получить ключ"
-    }
-    else {
-        message = "Ключ получен!"
-    }
-    modal.style.display = "block";
-    const modalcontent = document.getElementById("modal-content");
-    modalcontent.innerHTML = `<span id="modal-close" class="modal">dfghjkhg</span>
+    if (modal.style.display != "block") {
+        let path = "/images/key.png";
+        if (message == "timer end") {
+            path = "/images/close.png";
+            message = "К сожалению время вышло и вы не успели получить ключ"
+        }
+        else {
+            message = "Ключ получен!"
+        }
+        modal.style.display = "block";
+        const modalcontent = document.getElementById("modal-content");
+        modalcontent.innerHTML = `<span id="modal-close" class="modal">dfghjkhg</span>
       <img src="${path}" alt="Картина" class="modal-image">
       <p class="modal-text">${message}</p>`;
-    const span = document.getElementById("modal-close");
-    span.style.display = 'block';
-    span.onclick = function () {
-        modal.style.display = "none";
+        const span = document.getElementById("modal-close");
+        span.style.display = 'block';
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
     }
 }
 // Функция для закрытия модального окна при нажатии на крестик

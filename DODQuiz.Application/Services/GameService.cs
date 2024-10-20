@@ -87,11 +87,22 @@ namespace DODQuiz.Application.Services
         }
         public async Task<ErrorOr<Success>> RemoveUserFromGame(Guid userId, CancellationToken cancellationToken)
         {
-            if (_users.Any(u => u.Id == userId))
+            if (_userStatuses.Any(u=> u.Key == userId))
             {
                 var user = _users.FirstOrDefault(u => u.Id == userId);
                 _users.Remove(user);
-                return Result.Success;
+                try
+                {
+                    _userStatuses.Remove(userId, out var status);
+                    _userToQuestion.Remove(user, out var question);
+                    _userToCategory.Remove(user, out var category);
+                    return Result.Success;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    return Error.NotFound();
+                }
             }
             return Error.NotFound();
         }

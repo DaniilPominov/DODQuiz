@@ -15,7 +15,21 @@ async function getIp() {
         console.error(error);
     }
 };
-
+async function removeUser(i) {
+    const userId = document.getElementById(`userSelect${i}`).value;
+    try {
+        const response = await fetch(`/api/Game/RemoveUser?userId=${userId}`, {
+            method: 'POST'
+        });
+        if (!response.ok) {
+            throw new Error('Ошибка при отвязке пользователя');
+        }
+        document.getElementById(`result${i}`).textContent = 'Больше не участвует в игре';
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
 async function timerHandler(timeRemaining) {
     let time = await convertSeconds(timeRemaining);
     document.getElementById('timer').innerText = `${time["minutes"]}:${time["seconds"]}`;
@@ -57,9 +71,10 @@ function generateborders(k) {
                     <br><br>
 
                         <button id="submitUserCategory${i}" onclick="submitSelection(${i})">Подтвердить выбор</button>
+                        
                         <div id="result${i}"></div>
     </div>`;
-
+        //<button id="RemoveUser${i}" onclick="removeUser(${i})">Отвязать игрока</button>
         contentdiv.appendChild(cell);
     }
     let buttonDiv = document.createElement("div");

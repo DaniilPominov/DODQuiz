@@ -29,6 +29,13 @@ namespace DODQuiz.API.Controllers
         }
 
         [Authorize(Policy = "admin")]
+        [HttpPost("RemoveUser")]
+        public async Task<ActionResult> RemoveUser(Guid userId, CancellationToken cancellationToken)
+        {
+            var result = await _gameService.RemoveUserFromGame(userId, cancellationToken);
+            return Ok(result.Value);
+        }
+        [Authorize(Policy = "admin")]
         [HttpPost("StartRound")]
         public async Task<ActionResult> StartRound(int? remainingTime, CancellationToken cancellation)
         {
@@ -210,15 +217,19 @@ namespace DODQuiz.API.Controllers
 
                     if (statuses.Count > 0)
                     {
-                        messagePrepare.TryAdd("all-win", "true");
-                        foreach (var stat in statuses)
+                        messagePrepare.TryAdd("all-win", "false");
+                        if (statuses.All(s => s.Value == true))
                         {
-                            if (!stat.Value)
-                            {
-                                messagePrepare.TryUpdate("all-win", "false", "true");
-                                break;
-                            }
+                            messagePrepare.TryUpdate("all-win", "true", "false");
                         }
+                        //foreach (var stat in statuses)
+                        //{
+                        //    if (!stat.Value)
+                        //    {
+                        //        messagePrepare.TryUpdate("all-win", "false", "true");
+                        //        break;
+                        //    }
+                        //}
                     }
 
                     var message = JsonSerializer.Serialize(messagePrepare);
