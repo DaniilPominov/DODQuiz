@@ -72,17 +72,17 @@ function generateborders(k) {
     buttonstart.className = "button";
     buttonstart.addEventListener("click", startround);
 
-    let buttonend = document.createElement("button");
-    buttonend.id = "stop-round-button";
-    buttonend.textContent = "Завершить";
-    buttonend.className = "button";
-    buttonend.addEventListener("click", stopround);
+    // let buttonend = document.createElement("button");
+    // buttonend.id = "stop-round-button";
+    // buttonend.textContent = "Завершить";
+    // buttonend.className = "button";
+    // buttonend.addEventListener("click", stopround);
 
     let timerbox = document.createElement("input");
     timerbox.id = "round-length";
     timerbox.placeholder = "Длина раунда (секунд)";
     buttonDiv.appendChild(timerbox);
-    buttonDiv.appendChild(buttonend);
+    // buttonDiv.appendChild(buttonend);
     buttonDiv.appendChild(buttonstart);
     
 
@@ -233,7 +233,7 @@ async function handleuserstatus(statuses) {
             }
             else {
                 let userimg = document.getElementById(`user-image${j}`);
-                userimg.src = "https://via.placeholder.com/200";
+                userimg.src = "";
             }
 
         }

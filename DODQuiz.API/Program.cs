@@ -26,10 +26,10 @@ namespace DODQuiz.API
             //string LocalIp = LocalIPAddress();
             string LocalIp = LocalIPAddress();
             app.Urls.Add("http://" + LocalIp + ":5072");
-            app.Urls.Add("http://" + "*" + ":5072");
-            //app.Urls.Add("https://" + LocalIp + ":5071");
+            app.Urls.Add("http://" + "localhost" + ":5072");
+            //app.Urls.Add("http://" + "*" + ":5072");
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            if (!app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

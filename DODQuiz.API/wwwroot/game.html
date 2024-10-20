@@ -6,6 +6,13 @@
     <title>IVT QUIZ</title>
     <link rel="stylesheet" type="text/css" href="css/game.css" />
     <link rel="stylesheet" type="text/css" href="css/security.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="myModal" class="modal">
@@ -17,18 +24,18 @@
     <div id="loading">Проверка аутентификации...</div>
     <div id="access-policy" style="display:none">user</div>
     <div class="error-message" id="errorMessage"></div>
-    <div id="timer">Таймер: 00:00</div>
+    <div id="timer">00:00</div>
     <div class="content" id="Content">
         <div class="content" id="protectedContent">
             <div class="background">
                 <div class="container">
                     <img id="question-image" src="/images/200.png" style="opacity:0;" alt="Placeholder Image" class="image">
-                    <div id="question-name">Ожидайте начала игры</div>
+                    <div id="question-name" class="text">Ожидайте начала игры</div>
                     <div class="text" id="question-text"></div>
                 </div>
 
                 <div class="input-container">
-                    <input id="root-code" type="password" placeholder="root" class="text-input">
+                    <input id="root-code" type="password" placeholder="Секретный ключ" class="text-input">
                     <button id="root-code-buttond" class="submit-button">Отправить</button>
                 </div>
             </div>
